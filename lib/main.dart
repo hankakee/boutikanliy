@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'screens/login.dart';
 
 void main() {
   runApp(const MyApp());
@@ -12,8 +13,10 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'EBoutikoo',
+      theme: ThemeData(fontFamily: 'Poppins'),
       debugShowCheckedModeBanner: false,
-      home: const MyHomePage(title: 'EBoutikoo'),
+      home: const Login(),
+      // home: const MyHomePage(title: 'EBoutikoo'),
     );
   }
 }
