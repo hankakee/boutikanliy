@@ -1,25 +1,5 @@
-import 'package:flutter/material.dart';
-import 'screens/login.dart';
-
-void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
-
-  // This widget is the root of your application.
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'EBoutikoo',
-      theme: ThemeData(fontFamily: 'Poppins'),
-      debugShowCheckedModeBanner: false,
-      home: const Login(),
-      // home: const Home(title: 'EBoutikoo'),
-    );
-  }
-}
+import "package:flutter/material.dart";
+import '../services/Drawer.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key, required this.title}) : super(key: key);
@@ -89,7 +69,13 @@ class _HomeState extends State<Home> {
       ),
 
       appBar: AppBar(
-        backgroundColor: const Color(0XFF994CFC),
+        backgroundColor: Colors.white,
+        elevation: 0,
+        // leading: IconButton(
+        //   icon: Icon(Icons.menu_sharp),
+        //   onPressed: CustomizedDrawer().build(context),
+        // ),
+        iconTheme: const IconThemeData(color: Color(0XFF994CFC)),
         title: SizedBox(
           width: 200,
           child: Image.asset('eboutik.png', fit: BoxFit.cover),

@@ -1,5 +1,7 @@
 import "package:flutter/material.dart";
 import "../services/mesaj.dart";
+import 'dart:async';
+import 'Home.dart';
 
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
@@ -10,6 +12,7 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> {
   final _formKey = GlobalKey<FormState>();
+  bool disableButton = true;
   TextEditingController itilizateController = TextEditingController();
   TextEditingController pwdController = TextEditingController();
   @override
@@ -17,20 +20,20 @@ class _LoginState extends State<Login> {
     return Scaffold(
       body: SingleChildScrollView(
         child: Container(
-          height: 730.0,
+          height: 700.0,
           color: Colors.white,
           child: Column(
             children: [
               Container(
                 width: double.infinity,
-                height: 300.0,
+                height: 250.0,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisSize: MainAxisSize.max,
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: <Widget>[
                     Padding(
-                      padding: const EdgeInsets.only(bottom: 50.0),
+                      padding: const EdgeInsets.only(bottom: 10.0),
                       child: Image.asset(
                         "eboutik.png",
                         width: 250.0,
@@ -55,12 +58,31 @@ class _LoginState extends State<Login> {
                   child: Column(
                     children: [
                       Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
+                          Container(
+                              padding:
+                                  const EdgeInsets.only(top: 5.0, bottom: 5.0),
+                              child: Column(
+                                children: const [
+                                  Text(
+                                    " - BYENVINI ANKO - ",
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 20.0),
+                                  ),
+                                  Text(
+                                    "Nou pral dekouvri pwodui'w remen yo",
+                                    style: TextStyle(
+                                        color: Colors.grey, fontSize: 10.0),
+                                  )
+                                ],
+                              )),
                           // Itilizatè section
                           Container(
                             width: double.infinity,
                             padding: const EdgeInsets.only(
-                                top: 30.0, left: 10.0, bottom: 7.0),
+                                top: 5.0, left: 10.0, bottom: 7.0),
                             child: const Text(
                               "Itilizatè",
                               textAlign: TextAlign.left,
@@ -84,13 +106,6 @@ class _LoginState extends State<Login> {
                                   hintText: "Antre non itilizatè ou a...",
                                   border: InputBorder.none,
                                 ),
-                                // validator: (value) {
-                                //   if (value == null || value.isEmpty) {
-                                //     return '';
-                                //     //  Itilizatè la obligatwa
-                                //   }
-                                //   return null;
-                                // },
                               ),
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(10),
@@ -136,24 +151,36 @@ class _LoginState extends State<Login> {
                                       width: 2,
                                       color: const Color(0XFF707070)))),
                           GestureDetector(
-                            onTap: () {
-                              print("Submit api data");
-                              if (_formKey.currentState!.validate()) {
-                                print("est valid");
-                                Map data = {
-                                  "username": itilizateController.text,
-                                  "password": pwdController.text
-                                };
-                                print(data["username"]);
-                                if (data["username"] == " ") {
-                                  ManagerMesaj().showMesaj2(context,
-                                      "First test Non itilizate ou antre a pa valid!!!");
-                                } else {}
-                              } else {
-                                ManagerMesaj().showMesaj2(context,
-                                    "Non itilizate ou antre a pa valid!!!");
-                              }
-                            },
+                            onTap: disableButton
+                                ? () {
+                                    setState(() {
+                                      disableButton = false;
+                                    });
+                                    Timer(const Duration(seconds: 2), () {
+                                      setState(() => disableButton = true);
+                                    });
+                                    print("clicked");
+                                    Map data = {
+                                      "username": itilizateController.text,
+                                      "password": pwdController.text
+                                    };
+
+                                    if (data["username"] == "" ||
+                                        data["password"] == "") {
+                                      ManagerMesaj().showMesaj2(context,
+                                          "Itilizate oswa modpas la pa valid!!!");
+                                    } else {
+                                      //correct redirect to pages
+                                      print("Correct bro");
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) => const Home(
+                                                    title: "Eboutikoo",
+                                                  )));
+                                    }
+                                  }
+                                : null,
                             child: Container(
                                 margin: const EdgeInsets.only(top: 25.0),
                                 width: double.infinity,
@@ -171,7 +198,10 @@ class _LoginState extends State<Login> {
                                   ],
                                 ),
                                 decoration: BoxDecoration(
-                                  color: const Color(0xFF994CFC),
+                                  color: disableButton
+                                      ? const Color(0xFF994CFC)
+                                      : const Color.fromARGB(
+                                          255, 100, 100, 100),
                                   borderRadius: BorderRadius.circular(10),
                                 )),
                           ),
