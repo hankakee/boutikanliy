@@ -1,20 +1,76 @@
 import "package:flutter/material.dart";
-import "../services/mesaj.dart";
+import "package:boutikanliy/services/mesaj.dart";
+import "package:boutikanliy/services/api.dart";
 import 'dart:async';
 import 'Home.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:boutikanliy/services/server_config.dart';
 
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
 
   @override
   State<Login> createState() => _LoginState();
+
+  void initState() {}
 }
 
 class _LoginState extends State<Login> {
   final _formKey = GlobalKey<FormState>();
   bool disableButton = true;
+
   TextEditingController itilizateController = TextEditingController();
   TextEditingController pwdController = TextEditingController();
+  final storage = const FlutterSecureStorage();
+
+  // check login
+  void auth(dynamic data, context) async {
+    print(ServerConfig.apiUrl);
+    var response =
+        await APIService.post(ServerConfig.apiUrl + 'auth/login', body: data);
+    print(response);
+    if (response != null && response['access_token'] != null) {
+      await storage.write(key: "access_token", value: response['access_token']);
+      //get profile user //
+      dynamic valuetoken = await storage.read(key: "access_token");
+      //find profile
+      // print("valuetoken: " + valuetoken.toString());/
+      if (valuetoken == null) {
+        ManagerMesaj()
+            .showMesaj2(context, "Tanpri eseye konekte talè...", true);
+      }
+      var resp2 = await APIService.get(
+          ServerConfig.apiUrl + "auth/profile", valuetoken);
+      print("resp2");
+      print(resp2['id']);
+      // print(resp2);
+      await storage.write(key: "id", value: resp2["id"].toString());
+      await storage.write(key: "email", value: resp2["email"].toString());
+      await storage.write(key: "name", value: resp2["name"].toString());
+      await storage.write(key: "avatar", value: resp2["avatar"].toString());
+      if (resp2 != null) {
+        ManagerMesaj().showMesaj2(
+            context,
+            "Byenvini " +
+                resp2["name"].toString() +
+                " men sa'n pote pou ou jodi a!",
+            false);
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => const Home(
+                      title: "Eboutikoo",
+                    )));
+      }
+    } else {
+      ManagerMesaj().showMesaj2(context, "Kont sa pa valid...", true);
+    }
+  }
+
+  String findProfile() {
+    return "";
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -78,13 +134,13 @@ class _LoginState extends State<Login> {
                                   )
                                 ],
                               )),
-                          // Itilizatè section
+                          // Imèl section
                           Container(
                             width: double.infinity,
                             padding: const EdgeInsets.only(
                                 top: 5.0, left: 10.0, bottom: 7.0),
                             child: const Text(
-                              "Itilizatè",
+                              "Imèl",
                               textAlign: TextAlign.left,
                               style: TextStyle(
                                 color: Colors.black,
@@ -103,7 +159,9 @@ class _LoginState extends State<Login> {
                                   color: Colors.black,
                                 ),
                                 decoration: const InputDecoration(
-                                  hintText: "Antre non itilizatè ou a...",
+                                  hintText: "Antre imèl ou a...",
+                                  icon: Icon(Icons.email,
+                                      color: Color(0xFF994CFC)),
                                   border: InputBorder.none,
                                 ),
                               ),
@@ -129,22 +187,26 @@ class _LoginState extends State<Login> {
                           Container(
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 10.0),
-                              child: TextFormField(
-                                //pwds/
-                                obscureText: true,
-                                enableSuggestions: false,
-                                autocorrect: false,
-                                // /pwds
-                                controller: pwdController,
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.black,
+                              child: Column(children: [
+                                TextFormField(
+                                  //pwds/
+                                  obscureText: true,
+                                  enableSuggestions: false,
+                                  autocorrect: false,
+                                  // /pwds
+                                  controller: pwdController,
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    color: Colors.black,
+                                  ),
+                                  decoration: const InputDecoration(
+                                    icon: Icon(Icons.lock,
+                                        color: const Color(0xFF994CFC)),
+                                    hintText: "Antre modpas ou la...",
+                                    border: InputBorder.none,
+                                  ),
                                 ),
-                                decoration: const InputDecoration(
-                                  hintText: "Antre modpas ou la...",
-                                  border: InputBorder.none,
-                                ),
-                              ),
+                              ]),
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(10),
                                   border: Border.all(
@@ -159,25 +221,22 @@ class _LoginState extends State<Login> {
                                     Timer(const Duration(seconds: 2), () {
                                       setState(() => disableButton = true);
                                     });
-                                    print("clicked");
-                                    Map data = {
-                                      "username": itilizateController.text,
-                                      "password": pwdController.text
+                                    // print("clicked");
+                                    Map dataLogin = {
+                                      "email": itilizateController.text.trim(),
+                                      "password": pwdController.text.trim()
                                     };
 
-                                    if (data["username"] == "" ||
-                                        data["password"] == "") {
-                                      ManagerMesaj().showMesaj2(context,
-                                          "Itilizate oswa modpas la pa valid!!!");
-                                    } else {
-                                      //correct redirect to pages
-                                      print("Correct bro");
-                                      Navigator.push(
+                                    if (dataLogin["username"] == "" ||
+                                        dataLogin["password"] == "") {
+                                      ManagerMesaj().showMesaj2(
                                           context,
-                                          MaterialPageRoute(
-                                              builder: (context) => const Home(
-                                                    title: "Eboutikoo",
-                                                  )));
+                                          "Itilizate oswa modpas la pa valid!!!",
+                                          false);
+                                    } else {
+                                      // check login
+                                      print("klike bouton sa...");
+                                      auth(dataLogin, context);
                                     }
                                   }
                                 : null,
