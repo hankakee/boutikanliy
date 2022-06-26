@@ -1,5 +1,8 @@
 import "package:flutter/material.dart";
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:boutikanliy/services/server_config.dart';
+import "package:boutikanliy/services/api.dart";
+import 'drawer.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key, required this.title}) : super(key: key);
@@ -10,18 +13,19 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   late String profileUser = "";
+  late List<Widget> tabwidget = [];
+
   @override
   void initState() {
     super.initState();
     loadProfile();
+    getCategories();
   }
 
   final storage = const FlutterSecureStorage();
 
   void loadProfile() async {
     dynamic avatar = await storage.read(key: "avatar");
-    print("avatar in this bro");
-    print(avatar);
     if (avatar != null) {
       setState(() => {profileUser = avatar});
     } else {
@@ -29,82 +33,89 @@ class _HomeState extends State<Home> {
     }
   }
 
+  void getCategories() async {
+    var result = await APIService.get(ServerConfig.apiUrl + "categories", null);
+    print("men result yo:");
+    // print(result);
+
+    List<Widget> tmptabwidget = [];
+    // result.map((e) => {print(e.toString())});
+    for (int i = 0; i < 2; i++) {
+      tmptabwidget.add(
+        Container(
+          margin: const EdgeInsets.only(bottom: 9.0),
+          width: double.infinity,
+          height: 120.0,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(result[i]["name"]),
+          ),
+          decoration: BoxDecoration(
+            color: Color.fromARGB(255, 22, 96, 156),
+            borderRadius: BorderRadius.circular(4),
+          ),
+        ),
+      );
+    }
+
+    tmptabwidget.add(Container(
+      child: GridView.count(
+        primary: false,
+        crossAxisSpacing: 6,
+        mainAxisSpacing: 6,
+        crossAxisCount: 2,
+        shrinkWrap: true,
+        children: [
+          // const SizedBox(
+          //   child: Padding(padding: EdgeInsets.only(top: 5.0)),
+          // ),
+          Container(
+            child: Column(children: [
+              Container(
+                width: double.infinity,
+                height: 120.0,
+                child: Image.network(result[3]["image"], fit: BoxFit.cover),
+              ),
+              Container(
+                child: Text(result[3]["name"]),
+              ),
+            ]),
+            padding: const EdgeInsets.all(4.0),
+            decoration: BoxDecoration(
+              color: const Color.fromARGB(255, 74, 0, 247),
+              borderRadius: BorderRadius.circular(4),
+            ),
+          ),
+          Container(
+            child: Column(children: [
+              Container(
+                width: double.infinity,
+                height: 120.0,
+                child: Image.network(result[4]['image'], fit: BoxFit.cover),
+              ),
+              Container(
+                child: Text(result[4]["name"]),
+              ),
+            ]),
+            padding: const EdgeInsets.all(4.0),
+            decoration: BoxDecoration(
+              color: const Color.fromARGB(255, 74, 0, 247),
+              borderRadius: BorderRadius.circular(4),
+            ),
+          ),
+        ],
+      ),
+    ));
+    // print(tmptabwidget);
+    if (tmptabwidget.isNotEmpty) {
+      setState(() => {tabwidget = List.from(tmptabwidget)});
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: Drawer(
-        child: ListView(
-          children: [
-            Container(
-              // color: const Color(0xFF994CFC),
-              // padding: const EdgeInsets.only(left: 20.0, top: 50.0),
-              child: Center(
-                child: Container(
-                    margin: const EdgeInsets.only(top: 90.0),
-                    width: 150.0,
-                    height: 150.0,
-                    // TODO load image from profile
-                    child: Text("Profile"),
-                    // profileUser == "profile"
-                    //     ? Image.network(
-                    //         profileUser,
-                    //         loadingBuilder: (BuildContext context, Widget child,
-                    //             ImageChunkEvent? loadingProgress) {
-                    //           if (loadingProgress == null) {
-                    //             return child;
-                    //           }
-                    //           return Center(
-                    //             child: CircularProgressIndicator(
-                    //               value: loadingProgress.expectedTotalBytes !=
-                    //                       null
-                    //                   ? loadingProgress.cumulativeBytesLoaded /
-                    //                       loadingProgress.expectedTotalBytes!
-                    //                   : null,
-                    //             ),
-                    //           );
-                    //         },
-                    //       )
-                    //     : const Text("ImageProfile"),
-                    decoration: const BoxDecoration(shape: BoxShape.circle)),
-              ),
-              decoration: const BoxDecoration(
-                image: DecorationImage(
-                    image: AssetImage("banner.png"), fit: BoxFit.cover),
-              ),
-              height: 250.0,
-              width: double.infinity,
-            ),
-            ListTile(
-                onTap: () {
-                  // callbackReplay("loose");
-                },
-                title: const Text(
-                  "Konekte",
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),
-                )),
-            ListTile(
-                onTap: () {
-                  // Navigator.push(
-                  //     context,
-                  //     MaterialPageRoute(
-                  //         builder: (context) => const EdScreen()));
-                  print("Ed klike");
-                },
-                title: const Text("Lis pwodui",
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold, fontSize: 20.0))),
-            ListTile(
-                onTap: () {
-                  // print("soti hangman tile");
-                  // SystemChannels.platform.invokeMethod('SystemNavigator.pop');
-                },
-                title: const Text("Dekonekte",
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold, fontSize: 20.0))),
-          ],
-        ),
-      ),
-
+      drawer: const CustomizedDrawer(),
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
@@ -124,97 +135,30 @@ class _HomeState extends State<Home> {
           padding: const EdgeInsets.only(top: 20.0),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10.0),
-            child: Column(
-              // mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Container(
-                    width: double.infinity,
-                    // color: Colors.tealAccent,
-                    child: const Text(
-                      "Kategori vedèt",
-                      textAlign: TextAlign.left,
-                      style: TextStyle(color: Colors.grey, fontSize: 17.0),
-                    )),
-                Container(
-                  margin: const EdgeInsets.only(top: 9.0),
+            child: Column(children: [
+              // -------------------- 2 box category-----------------------------------------
+              Container(
                   width: double.infinity,
-                  height: 120.0,
-                  child: const Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: Text("Brother 1"),
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.blue,
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                ),
-                Container(
-                    margin: const EdgeInsets.only(top: 9.0, bottom: 9.0),
-                    decoration: BoxDecoration(
-                      color: Colors.red,
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                    width: double.infinity,
-                    height: 120.0,
-                    child: const Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: Text("Brother 2"),
-                    )),
-                Flexible(
-                  child: GridView.count(
-                    primary: false,
-                    // padding: const EdgeInsets.all(20),
-                    crossAxisSpacing: 6,
-                    mainAxisSpacing: 6,
-                    crossAxisCount: 2,
-                    children: [
-                      Container(
-                        color: Color.fromARGB(255, 59, 88, 255),
-                        child: Text("Texte 1"),
-                        padding: EdgeInsets.all(4.0),
-                      ),
-                      Container(
-                        color: Color.fromARGB(255, 247, 0, 115),
-                        child: Text("Texte 2"),
-                        padding: EdgeInsets.all(4.0),
-                      ),
-                    ],
-                  ),
-                ),
-                //Container pwodui
-                Container(
-                    width: double.infinity,
-                    // color: Colors.tealAccent,
-                    child: const Text(
-                      "Pwodui vedèt",
-                      textAlign: TextAlign.left,
-                      style: TextStyle(color: Colors.grey, fontSize: 17.0),
-                    )),
-                Container(
-                  child: Flexible(
-                    child: GridView.count(
-                      primary: false,
-                      // padding: const EdgeInsets.all(20),
-                      crossAxisSpacing: 6,
-                      mainAxisSpacing: 6,
-                      crossAxisCount: 2,
-                      children: [
-                        Container(
-                          color: Color.fromARGB(255, 59, 88, 255),
-                          child: Text("Texte 1"),
-                          padding: EdgeInsets.all(4.0),
-                        ),
-                        Container(
-                          color: Color.fromARGB(255, 247, 0, 115),
-                          child: Text("Texte 2"),
-                          padding: EdgeInsets.all(4.0),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
+                  // color: Colors.tealAccent,
+                  child: const Text(
+                    "Kategori vedèt",
+                    textAlign: TextAlign.left,
+                    style: TextStyle(color: Colors.grey, fontSize: 17.0),
+                  )),
+
+              ///generated boxes
+              ///
+              ///
+              ///
+              ...tabwidget,
+
+              ///
+              ///
+              ///
+              //2 box grid category
+
+              // -----------------------------------------------------
+            ]),
           ),
         ),
       ),
