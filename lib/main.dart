@@ -15,9 +15,15 @@ class BoutikAnliy extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'EBoutikoo',
-      theme: ThemeData(fontFamily: 'Poppins'),
       debugShowCheckedModeBanner: false,
       // home: const Login(),
+      theme: ThemeData(
+        fontFamily: 'Poppins',
+        tabBarTheme: const TabBarTheme(
+            indicatorSize: TabBarIndicatorSize.label,
+            indicator: UnderlineTabIndicator(
+                borderSide: BorderSide(color: Color(0XFF994CFC)))),
+      ),
       home: const Home(title: 'EBoutikoo'),
     );
   }
