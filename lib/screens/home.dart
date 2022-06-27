@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import "package:flutter/material.dart";
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:boutikanliy/services/server_config.dart';
@@ -15,7 +17,8 @@ class _HomeState extends State<Home> {
   late String profileUser = "";
   late List<Widget> tabCategory = [];
   late List<Widget> tabProducts = [];
-
+  final cardsColor = Colors.grey[300];
+  Color primaryAppColor = Color(0XFF994CFC);
   @override
   void initState() {
     super.initState();
@@ -40,21 +43,21 @@ class _HomeState extends State<Home> {
         ServerConfig.apiUrl + "products?offset=0&limit=6", null);
 
     print("men result yo:");
-    print(result[0]["category"]["image"]);
-    print(result.length);
+    print(result[0]);
+    // print(result.length);
     List<Widget> tmpProductswidget = [];
     for (int i = 0; i < 6; i++) {
       tmpProductswidget.add(
         Container(
           margin: const EdgeInsets.only(bottom: 9.0),
           width: double.infinity,
-          height: 200.0,
+          height: 230.0,
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Column(children: [
               Container(
                 width: double.infinity,
-                height: 100.0,
+                height: 90.0,
                 // child: Text("Brother 2"),
                 child: Image.network(result[i]["category"]["image"],
                     fit: BoxFit.cover),
@@ -67,16 +70,27 @@ class _HomeState extends State<Home> {
                 child: Text(
                   formatTitle(result[i]["title"]),
                   textAlign: TextAlign.center,
-                  style: const TextStyle(
+                  style: TextStyle(
                       fontSize: 15.0,
-                      color: Color(0XFF994CFC),
+                      color: primaryAppColor,
+                      fontWeight: FontWeight.normal),
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.only(top: 1.0),
+                child: Text(
+                  result[i]["price"].toString() + "\$",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      fontSize: 15.0,
+                      color: primaryAppColor,
                       fontWeight: FontWeight.bold),
                 ),
               ),
             ]),
           ),
           decoration: BoxDecoration(
-            color: Colors.grey[300],
+            color: cardsColor,
             borderRadius: BorderRadius.circular(4),
           ),
         ),
@@ -124,16 +138,16 @@ class _HomeState extends State<Home> {
                 padding: const EdgeInsets.only(top: 6.0),
                 child: Text(
                   result[i]["name"],
-                  style: const TextStyle(
+                  style: TextStyle(
                       fontSize: 15.0,
-                      color: Color(0XFF994CFC),
+                      color: primaryAppColor,
                       fontWeight: FontWeight.bold),
                 ),
               ),
             ]),
           ),
           decoration: BoxDecoration(
-            color: Colors.grey[300],
+            color: cardsColor,
             borderRadius: BorderRadius.circular(4),
           ),
         ),
@@ -165,7 +179,7 @@ class _HomeState extends State<Home> {
             ]),
             padding: const EdgeInsets.all(4.0),
             decoration: BoxDecoration(
-              color: Colors.grey[300],
+              color: cardsColor,
               borderRadius: BorderRadius.circular(4),
             ),
           ),
@@ -183,7 +197,7 @@ class _HomeState extends State<Home> {
             ]),
             padding: const EdgeInsets.all(4.0),
             decoration: BoxDecoration(
-              color: Colors.grey[300],
+              color: cardsColor,
               borderRadius: BorderRadius.circular(4),
             ),
           ),
@@ -191,6 +205,7 @@ class _HomeState extends State<Home> {
       ),
     ));
     // print(tmptabwidget);
+    print(MediaQuery.of(context).size.height);
     if (tmptabwidget.isNotEmpty) {
       setState(() => {tabCategory = List.from(tmptabwidget)});
     }
@@ -199,49 +214,71 @@ class _HomeState extends State<Home> {
   Widget akeyInnerScreen() {
     return SingleChildScrollView(
       child: Container(
-          height: 1400.0,
-          padding: const EdgeInsets.only(top: 20.0),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10.0),
-            child: Column(children: [
-              // -------------------- 2 box category-----------------------------------------
-              Container(
-                  padding: const EdgeInsets.symmetric(vertical: 3.0),
+        // 1400.0,
+        height: 1400,
+        padding: const EdgeInsets.only(top: 20.0),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10.0),
+          child: Column(children: [
+            // -------------------- 2 box category-----------------------------------------
+            Container(
+                padding: const EdgeInsets.symmetric(vertical: 3.0),
+                width: double.infinity,
+                child: const Text(
+                  "Kategori vedèt",
+                  textAlign: TextAlign.left,
+                  style: TextStyle(color: Colors.grey, fontSize: 17.0),
+                )),
+            //generated boxes
+            ...tabCategory,
+            Container(
+                padding: const EdgeInsets.only(top: 60.0),
+                width: double.infinity,
+                child: const Text(
+                  "Pwodui vedèt",
+                  textAlign: TextAlign.left,
+                  style: TextStyle(color: Colors.grey, fontSize: 17.0),
+                )),
+            const SizedBox(
+                child: Padding(
+              padding: EdgeInsets.only(bottom: 8.0),
+            )),
+            Container(
+                child: GridView.count(
+                    shrinkWrap: true,
+                    primary: false,
+                    // padding: const EdgeInsets.all(20),
+                    crossAxisSpacing: 6,
+                    mainAxisSpacing: 6,
+                    crossAxisCount: 2,
+                    children: tabProducts)),
+            const Spacer(),
+            Column(
+              children: [
+                Container(
                   width: double.infinity,
-                  child: const Text(
-                    "Kategori vedèt",
-                    textAlign: TextAlign.left,
-                    style: TextStyle(color: Colors.grey, fontSize: 17.0),
-                  )),
-              //generated boxes
-              ...tabCategory,
-              Container(
-                  padding: const EdgeInsets.only(top: 10.0),
-                  width: double.infinity,
-                  child: const Text(
-                    "Pwodui vedèt",
-                    textAlign: TextAlign.left,
-                    style: TextStyle(color: Colors.grey, fontSize: 17.0),
-                  )),
-              const SizedBox(
-                  child: Padding(
-                padding: EdgeInsets.only(bottom: 8.0),
-              )),
-              Container(
-                  child: GridView.count(
-                      shrinkWrap: true,
-                      primary: false,
-                      // padding: const EdgeInsets.all(20),
-                      crossAxisSpacing: 6,
-                      mainAxisSpacing: 6,
-                      crossAxisCount: 2,
-                      children: tabProducts)),
+                  child: Text(
+                    "Kreyasyon Christophe Kervens",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(color: primaryAppColor),
+                  ),
+                ),
+                Container(
+                  padding: const EdgeInsets.only(bottom: 10.0),
+                  child: Text(
+                    "Etidyan Code9Class",
+                    style: TextStyle(color: primaryAppColor),
+                  ),
+                )
+              ],
+            )
 
-              ///products///
-              ///
-              //2 box grid category
-            ]),
-          )),
+            ///products///
+            ///
+            //2 box grid category
+          ]),
+        ),
+      ),
     );
   }
 
@@ -254,34 +291,34 @@ class _HomeState extends State<Home> {
           drawer: const CustomizedDrawer(),
           appBar: AppBar(
             backgroundColor: Colors.white,
-            foregroundColor: const Color(0XFF994CFC),
+            foregroundColor: primaryAppColor,
             elevation: 0,
             // leading: IconButton(
             //   icon: Icon(Icons.menu_sharp),
             //   onPressed: CustomizedDrawer().build(context),
             // ),
-            iconTheme: const IconThemeData(color: Color(0XFF994CFC)),
+            iconTheme: IconThemeData(color: primaryAppColor),
             title: SizedBox(
               width: 200,
               child: Image.asset('eboutik.png', fit: BoxFit.cover),
             ),
 
-            bottom: const TabBar(
+            bottom: TabBar(
               tabs: [
                 Tab(
                     child: Text(
                   'Akèy',
-                  style: TextStyle(color: Color(0XFF994CFC)),
+                  style: TextStyle(color: primaryAppColor),
                 )),
                 Tab(
                     child: Text(
                   'Favori',
-                  style: TextStyle(color: Color(0XFF994CFC)),
+                  style: TextStyle(color: primaryAppColor),
                 )),
                 Tab(
                     child: Text(
                   'Panye',
-                  style: TextStyle(color: Color(0XFF994CFC)),
+                  style: TextStyle(color: primaryAppColor),
                 )),
               ],
             ),
