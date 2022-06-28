@@ -78,13 +78,33 @@ class _HomeState extends State<Home> {
               ),
               Container(
                 padding: const EdgeInsets.only(top: 1.0),
-                child: Text(
-                  result[i]["price"].toString() + "\$",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                      fontSize: 15.0,
-                      color: primaryAppColor,
-                      fontWeight: FontWeight.bold),
+                child: Stack(
+                  children: [
+                    Positioned(
+                      right: 4.0,
+                      top: 4.0,
+                      child: Icon(Icons.favorite,
+                          size: 18.0, color: primaryAppColor), //Icon
+                    ),
+                    Container(
+                      width: double.infinity,
+                      // color: Colors.red,
+                      child: Text(
+                        result[i]["price"].toString() + "\$",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            fontSize: 15.0,
+                            color: primaryAppColor,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    Positioned(
+                      left: 4.0,
+                      top: 4.0,
+                      child: Icon(Icons.shopping_bag_rounded,
+                          size: 25.0, color: Colors.grey), //Icon
+                    ),
+                  ],
                 ),
               ),
             ]),
