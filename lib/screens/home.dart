@@ -21,11 +21,13 @@ class _HomeState extends State<Home> {
   Color primaryAppColor = Color(0XFF994CFC);
   @override
   void initState() {
-    super.initState();
     loadProfile();
     getCategories();
     getProducts();
+    super.initState();
   }
+
+  int selectedIndex = 1;
 
   final storage = const FlutterSecureStorage();
 
@@ -42,8 +44,8 @@ class _HomeState extends State<Home> {
     var result = await APIService.get(
         ServerConfig.apiUrl + "products?offset=0&limit=6", null);
 
-    print("men result yo:");
-    print(result[0]);
+    // print("men result yo:");
+    // print(result[0]);
     // print(result.length);
     List<Widget> tmpProductswidget = [];
     for (int i = 0; i < 6; i++) {
@@ -225,135 +227,173 @@ class _HomeState extends State<Home> {
       ),
     ));
     // print(tmptabwidget);
-    print(MediaQuery.of(context).size.height);
+    // print(MediaQuery.of(context).size.height);
     if (tmptabwidget.isNotEmpty) {
       setState(() => {tabCategory = List.from(tmptabwidget)});
     }
   }
 
   Widget akeyInnerScreen() {
-    return SingleChildScrollView(
-      child: Container(
-        // 1400.0,
-        height: 1400,
-        padding: const EdgeInsets.only(top: 20.0),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10.0),
-          child: Column(children: [
-            // -------------------- 2 box category-----------------------------------------
-            Container(
-                padding: const EdgeInsets.symmetric(vertical: 3.0),
-                width: double.infinity,
-                child: const Text(
-                  "Kategori vedèt",
-                  textAlign: TextAlign.left,
-                  style: TextStyle(color: Colors.grey, fontSize: 17.0),
-                )),
-            //generated boxes
-            ...tabCategory,
-            Container(
-                padding: const EdgeInsets.only(top: 60.0),
-                width: double.infinity,
-                child: const Text(
-                  "Pwodui vedèt",
-                  textAlign: TextAlign.left,
-                  style: TextStyle(color: Colors.grey, fontSize: 17.0),
-                )),
-            const SizedBox(
-                child: Padding(
-              padding: EdgeInsets.only(bottom: 8.0),
-            )),
-            Container(
-                child: GridView.count(
-                    shrinkWrap: true,
-                    primary: false,
-                    // padding: const EdgeInsets.all(20),
-                    crossAxisSpacing: 6,
-                    mainAxisSpacing: 6,
-                    crossAxisCount: 2,
-                    children: tabProducts)),
-            const Spacer(),
-            Column(
-              children: [
-                Container(
-                  width: double.infinity,
-                  child: Text(
-                    "Kreyasyon Christophe Kervens",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(color: primaryAppColor),
-                  ),
-                ),
-                Container(
-                  padding: const EdgeInsets.only(bottom: 10.0),
-                  child: Text(
-                    "Etidyan Code9Class",
-                    style: TextStyle(color: primaryAppColor),
-                  ),
-                )
-              ],
-            )
-
-            ///products///
-            ///
-            //2 box grid category
-          ]),
-        ),
+    return Container(
+      // 1400.0,
+      height: 1400,
+      padding: const EdgeInsets.only(top: 20.0),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10.0),
+        child: Column(children: [
+          // -------------------- 2 box category-----------------------------------------
+          Container(
+              padding: const EdgeInsets.symmetric(vertical: 3.0),
+              width: double.infinity,
+              child: const Text(
+                "Kategori vedèt",
+                textAlign: TextAlign.left,
+                style: TextStyle(color: Colors.grey, fontSize: 17.0),
+              )),
+          //generated boxes
+          ...tabCategory,
+          Container(
+              padding: const EdgeInsets.only(top: 60.0),
+              width: double.infinity,
+              child: const Text(
+                "Pwodui vedèt",
+                textAlign: TextAlign.left,
+                style: TextStyle(color: Colors.grey, fontSize: 17.0),
+              )),
+          const SizedBox(
+              child: Padding(
+            padding: EdgeInsets.only(bottom: 8.0),
+          )),
+          Container(
+              child: GridView.count(
+                  shrinkWrap: true,
+                  primary: false,
+                  // padding: const EdgeInsets.all(20),
+                  crossAxisSpacing: 6,
+                  mainAxisSpacing: 6,
+                  crossAxisCount: 2,
+                  children: tabProducts)),
+        ]),
       ),
     );
   }
 
+  static List<Widget> _widgetOptions = <Widget>[
+    Container(
+      // 1400.0,
+      height: 1400,
+      padding: const EdgeInsets.only(top: 20.0),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10.0),
+        child: Column(children: [
+          // -------------------- 2 box category-----------------------------------------
+          Container(
+              padding: const EdgeInsets.symmetric(vertical: 3.0),
+              width: double.infinity,
+              child: const Text(
+                "Kategori vedèt",
+                textAlign: TextAlign.left,
+                style: TextStyle(color: Colors.grey, fontSize: 17.0),
+              )),
+          //generated boxes
+          ...tabCategory,
+          Container(
+              padding: const EdgeInsets.only(top: 60.0),
+              width: double.infinity,
+              child: const Text(
+                "Pwodui vedèt",
+                textAlign: TextAlign.left,
+                style: TextStyle(color: Colors.grey, fontSize: 17.0),
+              )),
+          const SizedBox(
+              child: Padding(
+            padding: EdgeInsets.only(bottom: 8.0),
+          )),
+          Container(
+              child: GridView.count(
+                  shrinkWrap: true,
+                  primary: false,
+                  // padding: const EdgeInsets.all(20),
+                  crossAxisSpacing: 6,
+                  mainAxisSpacing: 6,
+                  crossAxisCount: 2,
+                  children: tabProducts)),
+        ]),
+      ),
+    );
+    Text(
+      'Index 1: Favori',
+    ),
+    Text(
+      'Index 2: Panye',
+    )
+  ];
+
+  void _changeIndex(int index) {
+    setState(() {
+      selectedIndex = index;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-        length: 3,
-        initialIndex: 0,
-        child: Scaffold(
-          drawer: const CustomizedDrawer(),
-          appBar: AppBar(
-            backgroundColor: Colors.white,
-            foregroundColor: primaryAppColor,
-            elevation: 0,
-            // leading: IconButton(
-            //   icon: Icon(Icons.menu_sharp),
-            //   onPressed: CustomizedDrawer().build(context),
-            // ),
-            iconTheme: IconThemeData(color: primaryAppColor),
-            title: SizedBox(
-              width: 200,
-              child: Image.asset('eboutik.png', fit: BoxFit.cover),
+    return Scaffold(
+      bottomNavigationBar: BottomNavigationBar(
+          items: const <BottomNavigationBarItem>[
+            BottomNavigationBarItem(
+              icon: Icon(Icons.play_arrow),
+              label: 'Akèy',
             ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.playlist_play),
+              label: 'Favori',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.chat),
+              label: 'Panye',
+            ),
+          ],
+          selectedItemColor: primaryAppColor,
+          currentIndex: selectedIndex,
+          onTap: _changeIndex),
+      drawer: const CustomizedDrawer(),
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        foregroundColor: primaryAppColor,
+        elevation: 0,
+        // leading: IconButton(
+        //   icon: Icon(Icons.menu_sharp),
+        //   onPressed: CustomizedDrawer().build(context),
+        // ),
+        iconTheme: IconThemeData(color: primaryAppColor),
+        title: SizedBox(
+          width: 200,
+          child: Image.asset('eboutik.png', fit: BoxFit.cover),
+        ),
 
-            bottom: TabBar(
-              tabs: [
-                Tab(
-                    child: Text(
-                  'Akèy',
-                  style: TextStyle(color: primaryAppColor),
-                )),
-                Tab(
-                    child: Text(
-                  'Favori',
-                  style: TextStyle(color: primaryAppColor),
-                )),
-                Tab(
-                    child: Text(
-                  'Panye',
-                  style: TextStyle(color: primaryAppColor),
-                )),
-              ],
-            ),
-          ),
-          body: TabBarView(
-            children: [
-              //Akey
-              Center(child: Container(child: akeyInnerScreen())),
-              //view 2
-              Center(child: Text("View 2")),
-              //view 3
-              Center(child: Text("View 3")),
-            ],
-          ),
-          // )
-        ));
+        // bottom: TabBar(
+        //   tabs: [
+        //     Tab(
+        //         child: Text(
+        //       'Akèy',
+        //       style: TextStyle(color: primaryAppColor),
+        //     )),
+        //     Tab(
+        //         child: Text(
+        //       'Favori',
+        //       style: TextStyle(color: primaryAppColor),
+        //     )),
+        //     Tab(
+        //         child: Text(
+        //       'Panye',
+        //       style: TextStyle(color: primaryAppColor),
+        //     )),
+        //   ],
+        // ),
+      ),
+      body: Center(
+        child: _widgetOptions.elementAt(selectedIndex),
+      ),
+    );
   }
 }
