@@ -1,10 +1,8 @@
-import 'dart:ui';
-
 import "package:flutter/material.dart";
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:boutikanliy/services/server_config.dart';
 import "package:boutikanliy/services/api.dart";
-import 'drawer.dart';
+import 'custom_drawer.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key, required this.title}) : super(key: key);
@@ -14,11 +12,11 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  late String profileUser = "";
+  String profileUser = "profile";
   late List<Widget> tabCategory = [];
   late List<Widget> tabProducts = [];
   final cardsColor = Colors.grey[300];
-  Color primaryAppColor = Color(0XFF994CFC);
+  Color primaryAppColor = const Color(0XFF994CFC);
   @override
   void initState() {
     loadProfile();
@@ -147,23 +145,28 @@ class _HomeState extends State<Home> {
           height: 200.0,
           child: Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Column(children: [
+            child: Stack(children: [
               Container(
                 width: double.infinity,
-                height: 140.0,
+                height: 190.0,
                 child: Image.network(result[i]["image"], fit: BoxFit.cover),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(4),
                 ),
               ),
-              Container(
-                padding: const EdgeInsets.only(top: 6.0),
-                child: Text(
-                  result[i]["name"],
-                  style: TextStyle(
-                      fontSize: 15.0,
-                      color: primaryAppColor,
-                      fontWeight: FontWeight.bold),
+              Positioned(
+                right: 0,
+                bottom: 0,
+                child: Container(
+                  padding: const EdgeInsets.only(left: 6.0),
+                  color: cardsColor,
+                  child: Text(
+                    result[i]["name"],
+                    style: TextStyle(
+                        fontSize: 15.0,
+                        color: primaryAppColor,
+                        fontWeight: FontWeight.bold),
+                  ),
                 ),
               ),
             ]),
@@ -191,13 +194,18 @@ class _HomeState extends State<Home> {
             child: Column(children: [
               Container(
                 width: double.infinity,
-                height: 120.0,
+                height: 130.0,
                 child: Image.network(result[3]["image"], fit: BoxFit.cover),
               ),
               Container(
-                padding: const EdgeInsets.only(top: 6.0),
-                child: Text(result[3]["name"]),
-              ),
+                  padding: const EdgeInsets.only(top: 6.0),
+                  child: Text(
+                    result[3]["name"],
+                    style: TextStyle(
+                        fontSize: 15.0,
+                        color: primaryAppColor,
+                        fontWeight: FontWeight.bold),
+                  )),
             ]),
             padding: const EdgeInsets.all(4.0),
             decoration: BoxDecoration(
@@ -209,12 +217,18 @@ class _HomeState extends State<Home> {
             child: Column(children: [
               Container(
                 width: double.infinity,
-                height: 120.0,
+                height: 130.0,
                 child: Image.network(result[4]["image"], fit: BoxFit.cover),
               ),
               Container(
                 padding: const EdgeInsets.only(top: 6.0),
-                child: Text(result[4]["name"]),
+                child: Text(
+                  result[4]["name"],
+                  style: TextStyle(
+                      fontSize: 15.0,
+                      color: primaryAppColor,
+                      fontWeight: FontWeight.bold),
+                ),
               ),
             ]),
             padding: const EdgeInsets.all(4.0),
@@ -234,100 +248,50 @@ class _HomeState extends State<Home> {
   }
 
   Widget akeyInnerScreen() {
-    return Container(
-      // 1400.0,
-      height: 1400,
-      padding: const EdgeInsets.only(top: 20.0),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10.0),
-        child: Column(children: [
-          // -------------------- 2 box category-----------------------------------------
-          Container(
-              padding: const EdgeInsets.symmetric(vertical: 3.0),
-              width: double.infinity,
-              child: const Text(
-                "Kategori vedèt",
-                textAlign: TextAlign.left,
-                style: TextStyle(color: Colors.grey, fontSize: 17.0),
-              )),
-          //generated boxes
-          ...tabCategory,
-          Container(
-              padding: const EdgeInsets.only(top: 60.0),
-              width: double.infinity,
-              child: const Text(
-                "Pwodui vedèt",
-                textAlign: TextAlign.left,
-                style: TextStyle(color: Colors.grey, fontSize: 17.0),
-              )),
-          const SizedBox(
-              child: Padding(
-            padding: EdgeInsets.only(bottom: 8.0),
-          )),
-          Container(
-              child: GridView.count(
-                  shrinkWrap: true,
-                  primary: false,
-                  // padding: const EdgeInsets.all(20),
-                  crossAxisSpacing: 6,
-                  mainAxisSpacing: 6,
-                  crossAxisCount: 2,
-                  children: tabProducts)),
-        ]),
+    return SingleChildScrollView(
+      child: Container(
+        height: 1400,
+        padding: const EdgeInsets.only(top: 40.0),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10.0),
+          child: Column(children: [
+            // -------------------- 2 box category-----------------------------------------
+            Container(
+                padding: const EdgeInsets.symmetric(vertical: 3.0),
+                width: double.infinity,
+                child: const Text(
+                  "Kategori vedèt",
+                  textAlign: TextAlign.left,
+                  style: TextStyle(color: Colors.grey, fontSize: 17.0),
+                )),
+            //generated boxes
+            ...tabCategory,
+            Container(
+                padding: const EdgeInsets.only(top: 40.0),
+                width: double.infinity,
+                child: const Text(
+                  "Pwodui vedèt",
+                  textAlign: TextAlign.left,
+                  style: TextStyle(color: Colors.grey, fontSize: 17.0),
+                )),
+            const SizedBox(
+                child: Padding(
+              padding: EdgeInsets.only(bottom: 8.0),
+            )),
+            Container(
+                child: GridView.count(
+                    shrinkWrap: true,
+                    primary: false,
+                    // padding: const EdgeInsets.all(20),
+                    crossAxisSpacing: 6,
+                    mainAxisSpacing: 6,
+                    crossAxisCount: 2,
+                    children: tabProducts)),
+          ]),
+        ),
       ),
     );
   }
-
-  static List<Widget> _widgetOptions = <Widget>[
-    Container(
-      // 1400.0,
-      height: 1400,
-      padding: const EdgeInsets.only(top: 20.0),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10.0),
-        child: Column(children: [
-          // -------------------- 2 box category-----------------------------------------
-          Container(
-              padding: const EdgeInsets.symmetric(vertical: 3.0),
-              width: double.infinity,
-              child: const Text(
-                "Kategori vedèt",
-                textAlign: TextAlign.left,
-                style: TextStyle(color: Colors.grey, fontSize: 17.0),
-              )),
-          //generated boxes
-          ...tabCategory,
-          Container(
-              padding: const EdgeInsets.only(top: 60.0),
-              width: double.infinity,
-              child: const Text(
-                "Pwodui vedèt",
-                textAlign: TextAlign.left,
-                style: TextStyle(color: Colors.grey, fontSize: 17.0),
-              )),
-          const SizedBox(
-              child: Padding(
-            padding: EdgeInsets.only(bottom: 8.0),
-          )),
-          Container(
-              child: GridView.count(
-                  shrinkWrap: true,
-                  primary: false,
-                  // padding: const EdgeInsets.all(20),
-                  crossAxisSpacing: 6,
-                  mainAxisSpacing: 6,
-                  crossAxisCount: 2,
-                  children: tabProducts)),
-        ]),
-      ),
-    );
-    Text(
-      'Index 1: Favori',
-    ),
-    Text(
-      'Index 2: Panye',
-    )
-  ];
 
   void _changeIndex(int index) {
     setState(() {
@@ -341,22 +305,22 @@ class _HomeState extends State<Home> {
       bottomNavigationBar: BottomNavigationBar(
           items: const <BottomNavigationBarItem>[
             BottomNavigationBarItem(
-              icon: Icon(Icons.play_arrow),
-              label: 'Akèy',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.playlist_play),
+              icon: Icon(Icons.favorite),
               label: 'Favori',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.chat),
+              icon: Icon(Icons.home),
+              label: 'Akèy',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.shopping_cart_sharp),
               label: 'Panye',
             ),
           ],
           selectedItemColor: primaryAppColor,
           currentIndex: selectedIndex,
           onTap: _changeIndex),
-      drawer: const CustomizedDrawer(),
+      drawer: CustomizedDrawer().buildDrawerOwn(context, profileUser),
       appBar: AppBar(
         backgroundColor: Colors.white,
         foregroundColor: primaryAppColor,
@@ -370,30 +334,13 @@ class _HomeState extends State<Home> {
           width: 200,
           child: Image.asset('eboutik.png', fit: BoxFit.cover),
         ),
-
-        // bottom: TabBar(
-        //   tabs: [
-        //     Tab(
-        //         child: Text(
-        //       'Akèy',
-        //       style: TextStyle(color: primaryAppColor),
-        //     )),
-        //     Tab(
-        //         child: Text(
-        //       'Favori',
-        //       style: TextStyle(color: primaryAppColor),
-        //     )),
-        //     Tab(
-        //         child: Text(
-        //       'Panye',
-        //       style: TextStyle(color: primaryAppColor),
-        //     )),
-        //   ],
-        // ),
       ),
-      body: Center(
-        child: _widgetOptions.elementAt(selectedIndex),
-      ),
+      body: Container(
+          child: selectedIndex == 1
+              ? akeyInnerScreen()
+              : (selectedIndex == 0
+                  ? Center(child: Text("Favori"))
+                  : Center(child: Text("Panye")))),
     );
   }
 }

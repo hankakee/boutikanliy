@@ -16,7 +16,8 @@ class BoutikAnliy extends StatelessWidget {
     return MaterialApp(
       title: 'EBoutikoo',
       debugShowCheckedModeBanner: false,
-      // home: const Login(),
+      home: const Login(),
+      // home: const Home(title: 'EBoutikoo'),
       theme: ThemeData(
         fontFamily: 'Poppins',
         tabBarTheme: const TabBarTheme(
@@ -24,7 +25,6 @@ class BoutikAnliy extends StatelessWidget {
             indicator: UnderlineTabIndicator(
                 borderSide: BorderSide(color: Color(0XFF994CFC)))),
       ),
-      home: const Home(title: 'EBoutikoo'),
     );
   }
 }

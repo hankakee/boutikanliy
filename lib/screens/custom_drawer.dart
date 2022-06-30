@@ -1,10 +1,11 @@
 import "package:flutter/material.dart";
 
-class CustomizedDrawer extends StatelessWidget {
-  const CustomizedDrawer({Key? key}) : super(key: key);
+class CustomizedDrawer {
+  // final String picture;
+  // const CustomizedDrawer({Key? key, required this.picture});
+  CustomizedDrawer();
 
-  @override
-  Widget build(BuildContext context) {
+  Widget buildDrawerOwn(BuildContext context, String pic) {
     return Drawer(
       child: ListView(
         children: [
@@ -16,28 +17,7 @@ class CustomizedDrawer extends StatelessWidget {
                   margin: const EdgeInsets.only(top: 90.0),
                   width: 150.0,
                   height: 150.0,
-                  // TODO load image from profile
-                  child: Text("Profile"),
-                  // profileUser == "profile"
-                  //     ? Image.network(
-                  //         profileUser,
-                  //         loadingBuilder: (BuildContext context, Widget child,
-                  //             ImageChunkEvent? loadingProgress) {
-                  //           if (loadingProgress == null) {
-                  //             return child;
-                  //           }
-                  //           return Center(
-                  //             child: CircularProgressIndicator(
-                  //               value: loadingProgress.expectedTotalBytes !=
-                  //                       null
-                  //                   ? loadingProgress.cumulativeBytesLoaded /
-                  //                       loadingProgress.expectedTotalBytes!
-                  //                   : null,
-                  //             ),
-                  //           );
-                  //         },
-                  //       )
-                  //     : const Text("ImageProfile"),
+                  child: Image.network(pic),
                   decoration: const BoxDecoration(shape: BoxShape.circle)),
             ),
             decoration: const BoxDecoration(
