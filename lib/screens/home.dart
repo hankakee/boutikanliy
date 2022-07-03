@@ -1,8 +1,12 @@
+import 'package:boutikanliy/screens/allproducts.dart';
 import "package:flutter/material.dart";
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:boutikanliy/services/server_config.dart';
 import "package:boutikanliy/services/api.dart";
 import 'custom_drawer.dart';
+import 'dart:async';
+import 'package:boutikanliy/services/constants.dart';
+import 'package:boutikanliy/cards/products.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key, required this.title}) : super(key: key);
@@ -13,10 +17,11 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   String profileUser = "profile";
+  String nameclient = "N/A";
+  String mailclient = "N/A";
   late List<Widget> tabCategory = [];
-  late List<Widget> tabProducts = [];
-  final cardsColor = Colors.grey[300];
-  Color primaryAppColor = const Color(0XFF994CFC);
+  late List tabProducts = [];
+  bool loaded = false;
   @override
   void initState() {
     loadProfile();
@@ -28,11 +33,20 @@ class _HomeState extends State<Home> {
   int selectedIndex = 1;
 
   final storage = const FlutterSecureStorage();
+  String formatTitle(String textDesc) {
+    if (textDesc.length > 13) {
+      return textDesc.substring(0, 13) + "...";
+    }
+    return textDesc;
+  }
 
   void loadProfile() async {
     dynamic avatar = await storage.read(key: "avatar");
+    dynamic namex = await storage.read(key: "name");
+    dynamic emailex = await storage.read(key: "email");
     if (avatar != null) {
-      setState(() => {profileUser = avatar});
+      setState(() =>
+          {profileUser = avatar, nameclient = namex, mailclient = emailex});
     } else {
       profileUser = "profile";
     }
@@ -41,93 +55,8 @@ class _HomeState extends State<Home> {
   void getProducts() async {
     var result = await APIService.get(
         ServerConfig.apiUrl + "products?offset=0&limit=6", null);
-
-    // print("men result yo:");
-    // print(result[0]);
-    // print(result.length);
-    List<Widget> tmpProductswidget = [];
-    for (int i = 0; i < 6; i++) {
-      tmpProductswidget.add(
-        Container(
-          margin: const EdgeInsets.only(bottom: 9.0),
-          width: double.infinity,
-          height: 230.0,
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(children: [
-              Container(
-                width: double.infinity,
-                height: 90.0,
-                // child: Text("Brother 2"),
-                child: Image.network(result[i]["category"]["image"],
-                    fit: BoxFit.cover),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(4),
-                ),
-              ),
-              Container(
-                padding: const EdgeInsets.only(top: 6.0),
-                child: Text(
-                  formatTitle(result[i]["title"]),
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                      fontSize: 15.0,
-                      color: primaryAppColor,
-                      fontWeight: FontWeight.normal),
-                ),
-              ),
-              Container(
-                padding: const EdgeInsets.only(top: 1.0),
-                child: Stack(
-                  children: [
-                    Positioned(
-                      right: 4.0,
-                      top: 4.0,
-                      child: Icon(Icons.favorite,
-                          size: 18.0, color: primaryAppColor), //Icon
-                    ),
-                    Container(
-                      width: double.infinity,
-                      // color: Colors.red,
-                      child: Text(
-                        result[i]["price"].toString() + "\$",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            fontSize: 15.0,
-                            color: primaryAppColor,
-                            fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    Positioned(
-                      left: 4.0,
-                      top: 4.0,
-                      child: Icon(Icons.shopping_bag_rounded,
-                          size: 25.0, color: Colors.grey), //Icon
-                    ),
-                  ],
-                ),
-              ),
-            ]),
-          ),
-          decoration: BoxDecoration(
-            color: cardsColor,
-            borderRadius: BorderRadius.circular(4),
-          ),
-        ),
-      );
-    }
-    // print(tmpProductswidget);
-    setState(() => {
-          if (tmpProductswidget.isNotEmpty)
-            {tabProducts = List.from(tmpProductswidget)}
-        });
-  }
-
-  String formatTitle(String textDesc) {
-    if (textDesc.length > 15) {
-      return textDesc.substring(0, 15) + "...";
-    }
-    return textDesc;
+    setState(() => {tabProducts = result, loaded = true});
+    // print(tabProducts);
   }
 
   void getCategories() async {
@@ -136,7 +65,6 @@ class _HomeState extends State<Home> {
     // print(result);
     // print(result[4]['image']);
     List<Widget> tmptabwidget = [];
-    // result.map((e) => {print(e.toString())});
     for (int i = 0; i < 2; i++) {
       tmptabwidget.add(
         Container(
@@ -159,12 +87,12 @@ class _HomeState extends State<Home> {
                 bottom: 0,
                 child: Container(
                   padding: const EdgeInsets.only(left: 6.0),
-                  color: cardsColor,
+                  color: Constants.cardsColor,
                   child: Text(
                     result[i]["name"],
                     style: TextStyle(
                         fontSize: 15.0,
-                        color: primaryAppColor,
+                        color: Constants.primaryAppColor,
                         fontWeight: FontWeight.bold),
                   ),
                 ),
@@ -172,7 +100,7 @@ class _HomeState extends State<Home> {
             ]),
           ),
           decoration: BoxDecoration(
-            color: cardsColor,
+            color: Constants.cardsColor,
             borderRadius: BorderRadius.circular(4),
           ),
         ),
@@ -203,13 +131,13 @@ class _HomeState extends State<Home> {
                     result[3]["name"],
                     style: TextStyle(
                         fontSize: 15.0,
-                        color: primaryAppColor,
+                        color: Constants.primaryAppColor,
                         fontWeight: FontWeight.bold),
                   )),
             ]),
             padding: const EdgeInsets.all(4.0),
             decoration: BoxDecoration(
-              color: cardsColor,
+              color: Constants.cardsColor,
               borderRadius: BorderRadius.circular(4),
             ),
           ),
@@ -226,14 +154,14 @@ class _HomeState extends State<Home> {
                   result[4]["name"],
                   style: TextStyle(
                       fontSize: 15.0,
-                      color: primaryAppColor,
+                      color: Constants.primaryAppColor,
                       fontWeight: FontWeight.bold),
                 ),
               ),
             ]),
             padding: const EdgeInsets.all(4.0),
             decoration: BoxDecoration(
-              color: cardsColor,
+              color: Constants.cardsColor,
               borderRadius: BorderRadius.circular(4),
             ),
           ),
@@ -247,10 +175,10 @@ class _HomeState extends State<Home> {
     }
   }
 
-  Widget akeyInnerScreen() {
+  Widget akeyInnerScreen(context) {
     return SingleChildScrollView(
       child: Container(
-        height: 1400,
+        height: 1600,
         padding: const EdgeInsets.only(top: 40.0),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10.0),
@@ -279,14 +207,45 @@ class _HomeState extends State<Home> {
               padding: EdgeInsets.only(bottom: 8.0),
             )),
             Container(
-                child: GridView.count(
-                    shrinkWrap: true,
-                    primary: false,
-                    // padding: const EdgeInsets.all(20),
-                    crossAxisSpacing: 6,
-                    mainAxisSpacing: 6,
-                    crossAxisCount: 2,
-                    children: tabProducts)),
+              child: GridView.count(
+                  shrinkWrap: true,
+                  primary: false,
+                  crossAxisSpacing: 6,
+                  mainAxisSpacing: 6,
+                  crossAxisCount: 2,
+                  children: tabProducts.map((pr) {
+                    return Products().cardProduct(
+                        pr['images'][1],
+                        Constants.formatTitle(pr['title']),
+                        pr['price'].toString() + "\$",
+                        pr['id'], (value, id) {
+                      print("Le avl: " + value + "" + id.toString());
+                    });
+                  }).toList()),
+            ),
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const AllProducts()));
+              },
+              child: Container(
+                  padding: const EdgeInsets.symmetric(vertical: 7.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Wè plis pwodui...",
+                        style: TextStyle(
+                            color: Constants.primaryAppColor,
+                            fontWeight: FontWeight.bold),
+                      ),
+                      Icon(Icons.playlist_add_outlined,
+                          color: Constants.primaryAppColor)
+                    ],
+                  )),
+            )
           ]),
         ),
       ),
@@ -317,27 +276,48 @@ class _HomeState extends State<Home> {
               label: 'Panye',
             ),
           ],
-          selectedItemColor: primaryAppColor,
+          selectedItemColor: Constants.primaryAppColor,
           currentIndex: selectedIndex,
           onTap: _changeIndex),
-      drawer: CustomizedDrawer().buildDrawerOwn(context, profileUser),
+      drawer: CustomizedDrawer()
+          .buildDrawerOwn(context, profileUser, nameclient, mailclient),
       appBar: AppBar(
         backgroundColor: Colors.white,
-        foregroundColor: primaryAppColor,
-        elevation: 0,
+        foregroundColor: Constants.primaryAppColor,
+        // elevation: 0,
         // leading: IconButton(
         //   icon: Icon(Icons.menu_sharp),
         //   onPressed: CustomizedDrawer().build(context),
         // ),
-        iconTheme: IconThemeData(color: primaryAppColor),
-        title: SizedBox(
-          width: 200,
+        actions: [
+          Container(
+            alignment: Alignment.center,
+            padding: const EdgeInsets.only(right: 10),
+            child: Text(
+              "PEYE",
+              style: TextStyle(
+                  fontSize: 16.0,
+                  color: Constants.primaryAppColor,
+                  fontWeight: FontWeight.bold),
+            ),
+          )
+        ],
+        leadingWidth: 40.0,
+        iconTheme: IconThemeData(color: Constants.primaryAppColor),
+        title: Container(
+          width: 120,
           child: Image.asset('eboutik.png', fit: BoxFit.cover),
         ),
       ),
       body: Container(
           child: selectedIndex == 1
-              ? akeyInnerScreen()
+              ? loaded == false
+                  ? Center(
+                      child: CircularProgressIndicator(
+                        color: Constants.primaryAppColor,
+                      ),
+                    )
+                  : akeyInnerScreen(context)
               : (selectedIndex == 0
                   ? Center(child: Text("Favori"))
                   : Center(child: Text("Panye")))),

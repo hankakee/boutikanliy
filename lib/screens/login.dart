@@ -54,7 +54,7 @@ class _LoginState extends State<Login> {
             "Byenvini " +
                 resp2["name"].toString() +
                 " men sa'n pote pou ou jodi a!",
-            false);
+            true);
         Navigator.push(
             context,
             MaterialPageRoute(
