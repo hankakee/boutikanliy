@@ -37,12 +37,12 @@ class _LoginState extends State<Login> {
       // print("valuetoken: " + valuetoken.toString());/
       if (valuetoken == null) {
         ManagerMesaj()
-            .showMesaj2(context, "Tanpri eseye konekte talè...", true);
+            .showMesaj2(context, "Tanpri eseye konekte talè...", true, 3);
       }
       var resp2 = await APIService.get(
           ServerConfig.apiUrl + "auth/profile", valuetoken);
-      print("resp2");
-      print(resp2['id']);
+      // print("resp2");
+      // print(resp2['id']);
       // print(resp2);
       await storage.write(key: "id", value: resp2["id"].toString());
       await storage.write(key: "email", value: resp2["email"].toString());
@@ -51,10 +51,11 @@ class _LoginState extends State<Login> {
       if (resp2 != null) {
         ManagerMesaj().showMesaj2(
             context,
-            "Byenvini " +
+            "Hello " +
                 resp2["name"].toString() +
-                " men sa'n pote pou ou jodi a!",
-            true);
+                ",men sa'n pote pou ou jodi a!",
+            true,
+            3);
         Navigator.push(
             context,
             MaterialPageRoute(
@@ -63,7 +64,7 @@ class _LoginState extends State<Login> {
                     )));
       }
     } else {
-      ManagerMesaj().showMesaj2(context, "Kont sa pa valid...", true);
+      ManagerMesaj().showMesaj2(context, "Kont sa pa valid...", true, 3);
     }
   }
 
@@ -232,7 +233,8 @@ class _LoginState extends State<Login> {
                                       ManagerMesaj().showMesaj2(
                                           context,
                                           "Itilizate oswa modpas la pa valid!!!",
-                                          false);
+                                          false,
+                                          2);
                                     } else {
                                       // check login
                                       print("klike bouton sa...");

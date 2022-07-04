@@ -6,7 +6,7 @@ class ManagerMesaj {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(mesaj)));
   }
 
-  void showMesaj2(context, mesaj, bool hideclose) {
+  void showMesaj2(context, mesaj, bool hideclose, int time) {
     ScaffoldMessenger.of(context).showMaterialBanner(
       MaterialBanner(
         content: Text(mesaj),
@@ -22,7 +22,7 @@ class ManagerMesaj {
       ),
     );
 
-    Timer(const Duration(seconds: 3), () {
+    Timer(Duration(seconds: time), () {
       ScaffoldMessenger.of(context).hideCurrentMaterialBanner();
     });
   }

@@ -13,13 +13,14 @@ class APIService {
         },
       );
     } else {
-      print("Nou pa gen header");
+      // print("Nou pa gen header");
       response = await http.get(Uri.parse(url));
     }
     if (response.statusCode == 200) {
       return json.decode(response.body);
     } else {
       print("Gen erè ki pase");
+      return "no ";
     }
   }
 

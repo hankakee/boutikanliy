@@ -3,10 +3,9 @@ import "package:flutter/material.dart";
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:boutikanliy/services/server_config.dart';
 import "package:boutikanliy/services/api.dart";
+import "package:boutikanliy/services/storage.dart";
 import 'custom_drawer.dart';
-import 'dart:async';
 import 'package:boutikanliy/services/constants.dart';
-import 'package:boutikanliy/cards/products.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key, required this.title}) : super(key: key);
@@ -21,12 +20,16 @@ class _HomeState extends State<Home> {
   String mailclient = "N/A";
   late List<Widget> tabCategory = [];
   late List tabProducts = [];
+  late List<int> shoppingCartTab = [];
+  late List<int> favoritesTab = [];
   bool loaded = false;
   @override
   void initState() {
     loadProfile();
     getCategories();
     getProducts();
+    getShoppingCart();
+    getFavorites();
     super.initState();
   }
 
@@ -57,6 +60,24 @@ class _HomeState extends State<Home> {
         ServerConfig.apiUrl + "products?offset=0&limit=6", null);
     setState(() => {tabProducts = result, loaded = true});
     // print(tabProducts);
+  }
+
+  void getShoppingCart() async {
+    var shop = await Storage.showCart();
+    List<int> idLists = [];
+    for (var k = 0; k < shop.length; k++) {
+      idLists.add(shop[k][0] as int);
+    }
+    setState(() => {shoppingCartTab = idLists});
+  }
+
+  void getFavorites() async {
+    var shop = await Storage.showFavs();
+    List<int> idLists = [];
+    for (var k = 0; k < shop.length; k++) {
+      idLists.add(shop[k][0] as int);
+    }
+    setState(() => {favoritesTab = idLists});
   }
 
   void getCategories() async {
@@ -214,13 +235,110 @@ class _HomeState extends State<Home> {
                   mainAxisSpacing: 6,
                   crossAxisCount: 2,
                   children: tabProducts.map((pr) {
-                    return Products().cardProduct(
-                        pr['images'][1],
-                        Constants.formatTitle(pr['title']),
-                        pr['price'].toString() + "\$",
-                        pr['id'], (value, id) {
-                      print("Le avl: " + value + "" + id.toString());
-                    });
+                    return Container(
+                      margin: const EdgeInsets.only(bottom: 9.0),
+                      width: double.infinity,
+                      height: 230.0,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(children: [
+                          GestureDetector(
+                            onTap: () {
+                              // actionsprods("view", id);
+                            },
+                            child: Container(
+                              width: double.infinity,
+                              height: 90.0,
+                              child: Image.network(pr['images'][1],
+                                  fit: BoxFit.cover),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                            ),
+                          ),
+                          Container(
+                            padding: const EdgeInsets.only(top: 6.0),
+                            child: Text(
+                              Constants.formatTitle(pr['title']),
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  fontSize: 15.0,
+                                  color: Constants.primaryAppColor,
+                                  fontWeight: FontWeight.normal),
+                            ),
+                          ),
+                          Container(
+                            padding: const EdgeInsets.only(top: 1.0),
+                            child: Stack(
+                              children: [
+                                Container(
+                                  width: double.infinity,
+                                  child: Text(
+                                    pr['price'].toString() + "HTG",
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        fontSize: 15.0,
+                                        color: Constants.primaryAppColor,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                                Positioned(
+                                  right: 4.0,
+                                  top: 4.0,
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      Storage.addtoFavorites(pr);
+                                      setState(() {
+                                        favoritesTab.contains(pr['id'])
+                                            ? favoritesTab.removeWhere(
+                                                (el) => el == pr['id'])
+                                            : favoritesTab.add(pr['id']);
+                                      });
+                                    },
+                                    child: Icon(
+                                        favoritesTab.contains(pr['id'])
+                                            ? Icons.favorite
+                                            : Icons.favorite_border,
+                                        size: 22.0,
+                                        color: favoritesTab.contains(pr['id'])
+                                            ? Colors.pinkAccent
+                                            : Colors.grey),
+                                  ), //Icon
+                                ),
+                                Positioned(
+                                  left: 4.0,
+                                  top: 4.0,
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      Storage.addtoCart(pr);
+                                      setState(() {
+                                        shoppingCartTab.contains(pr['id'])
+                                            ? shoppingCartTab.removeWhere(
+                                                (el) => el == pr['id'])
+                                            : shoppingCartTab.add(pr['id']);
+                                      });
+                                    },
+                                    child: Icon(
+                                        shoppingCartTab.contains(pr['id'])
+                                            ? Icons.shopping_cart_rounded
+                                            : Icons.shopping_cart_outlined,
+                                        size: 25.0,
+                                        color:
+                                            shoppingCartTab.contains(pr['id'])
+                                                ? Constants.secondaryAppColor
+                                                : Colors.grey),
+                                  ), //Icon
+                                ),
+                              ],
+                            ),
+                          ),
+                        ]),
+                      ),
+                      decoration: BoxDecoration(
+                        color: Constants.cardsColor,
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                    );
                   }).toList()),
             ),
             GestureDetector(
@@ -293,12 +411,17 @@ class _HomeState extends State<Home> {
           Container(
             alignment: Alignment.center,
             padding: const EdgeInsets.only(right: 10),
-            child: Text(
-              "PEYE",
-              style: TextStyle(
-                  fontSize: 16.0,
-                  color: Constants.primaryAppColor,
-                  fontWeight: FontWeight.bold),
+            child: GestureDetector(
+              onTap: () {
+                Storage.removeKey("cart");
+              },
+              child: Text(
+                "PEYE",
+                style: TextStyle(
+                    fontSize: 16.0,
+                    color: Constants.primaryAppColor,
+                    fontWeight: FontWeight.bold),
+              ),
             ),
           )
         ],
