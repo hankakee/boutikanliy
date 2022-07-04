@@ -66,21 +66,21 @@ class Storage {
 
   static Future<List<dynamic>> showCart() async {
     String? value = await storage.read(key: "cart");
-    print("------------------show cart------------------------------------");
-    print("cart");
-    print(value);
+    // print("------------------show cart------------------------------------");
+    // print("cart");
+    // print(value);
     List tabCart = [];
     if (value != null) {
       tabCart = jsonDecode(value);
-      print("tabCart.length");
-      print(tabCart.length);
+      // print("tabCart.length");
+      // print(tabCart.length);
     }
     return tabCart;
   }
 
   static Future<List<dynamic>> showFavs() async {
     String? value = await storage.read(key: "favs");
-    print("------------------show cart------------------------------------");
+    print("------------------show favs------------------------------------");
     print("favs");
     print(value);
     List tabFavs = [];
@@ -156,6 +156,20 @@ class Storage {
       }
       print("Contains favs");
       showFavs();
+    }
+  }
+
+  static void removeFromFavs(List prod) async {
+    String? value = await storage.read(key: "favs");
+    var ltTab = [];
+    if (value != null) {
+      List tabFavs = jsonDecode(value);
+      for (var i = 0; i < tabFavs.length; i++) {
+        if (!(tabFavs[i][0] == prod[0])) {
+          ltTab.add(tabFavs[i]);
+        }
+      }
+      await storage.write(key: "favs", value: jsonEncode(ltTab));
     }
   }
 }

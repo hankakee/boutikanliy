@@ -5,6 +5,7 @@ import 'package:boutikanliy/services/server_config.dart';
 import "package:boutikanliy/services/api.dart";
 import "package:boutikanliy/services/storage.dart";
 import 'custom_drawer.dart';
+import 'favorites.dart';
 import 'package:boutikanliy/services/constants.dart';
 
 class Home extends StatefulWidget {
@@ -373,6 +374,11 @@ class _HomeState extends State<Home> {
   void _changeIndex(int index) {
     setState(() {
       selectedIndex = index;
+      // if (index == 1) {
+      getFavorites();
+      getShoppingCart();
+      getProducts();
+      // }
     });
   }
 
@@ -380,6 +386,7 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return Scaffold(
       bottomNavigationBar: BottomNavigationBar(
+          // type: BottomNavigationBarType.shifting,
           items: const <BottomNavigationBarItem>[
             BottomNavigationBarItem(
               icon: Icon(Icons.favorite),
@@ -442,7 +449,7 @@ class _HomeState extends State<Home> {
                     )
                   : akeyInnerScreen(context)
               : (selectedIndex == 0
-                  ? Center(child: Text("Favori"))
+                  ? const Center(child: Favorites())
                   : Center(child: Text("Panye")))),
     );
   }

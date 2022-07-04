@@ -1,28 +1,41 @@
-import 'package:flutter/material.dart';
+import "package:flutter/material.dart";
 import 'package:boutikanliy/services/constants.dart';
 import 'package:boutikanliy/services/server_config.dart';
 import "package:boutikanliy/services/api.dart";
 import "package:boutikanliy/services/storage.dart";
 import "home.dart";
 
-class AllProducts extends StatefulWidget {
-  const AllProducts({Key? key}) : super(key: key);
+class Favorites extends StatefulWidget {
+  const Favorites({Key? key}) : super(key: key);
 
   @override
-  State<AllProducts> createState() => _AllProductsState();
+  State<Favorites> createState() => _FavoritesState();
 }
 
-class _AllProductsState extends State<AllProducts> {
+class _FavoritesState extends State<Favorites> {
+  late List<Widget> tabCategory = [];
   late List tabProducts = [];
   late List<int> shoppingCartTab = [];
   late List<int> favoritesTab = [];
   bool loaded = false;
-  @override
-  void initState() {
-    getProducts();
-    getShoppingCart();
-    getFavorites();
-    super.initState();
+
+  void getProducts() async {
+    // var result = await APIService.get(
+    //     ServerConfig.apiUrl + "products?offset=0&limit=6", null);
+
+    var result = await Storage.showFavs();
+    print("============show favs====================");
+    //       prod['id'],
+    //       prod['title'],
+    //       prod['images'][1],
+    //       prod['price'],
+    //       prod['description'],
+    //       prod['category']['name']
+    print(result);
+    print(result.length);
+    print("================================");
+    setState(() => {tabProducts = result, loaded = true});
+    // print(tabProducts);
   }
 
   void getShoppingCart() async {
@@ -43,57 +56,17 @@ class _AllProductsState extends State<AllProducts> {
     setState(() => {favoritesTab = idLists});
   }
 
-  void getProducts() async {
-    try {
-      var result = await APIService.get(
-          ServerConfig.apiUrl + "products?offset=0&limit=100", null);
-      setState(() => {
-            loaded = true,
-            if (result.isNotEmpty)
-              {
-                tabProducts = result,
-              }
-          });
-      print("Done with products");
-    } catch (e) {
-      print(e);
-    }
+  @override
+  void initState() {
+    getFavorites();
+    getProducts();
+    getShoppingCart();
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        actions: [
-          Container(
-            alignment: Alignment.center,
-            padding: const EdgeInsets.only(right: 10),
-            child: GestureDetector(
-              onTap: () {
-                // Storage.removeKey("cart");
-              },
-              child: const Text(
-                "PEYE",
-                style: TextStyle(
-                    fontSize: 16.0,
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold),
-              ),
-            ),
-          )
-        ],
-        leading: GestureDetector(
-            onTap: () {
-              // Navigator.pop(context);
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const Home(title: "Eboutikoo")));
-              print("refresh from another");
-            },
-            child: const Icon(Icons.arrow_circle_left_outlined)),
-        backgroundColor: Constants.primaryAppColor,
-      ),
       body: SingleChildScrollView(
         child: loaded == false
             ? Center(
@@ -112,7 +85,7 @@ class _AllProductsState extends State<AllProducts> {
                         padding: const EdgeInsets.only(top: 40.0),
                         width: double.infinity,
                         child: const Text(
-                          "Pwodui vedèt",
+                          "Pwodui'w pi remen yo",
                           textAlign: TextAlign.left,
                           style: TextStyle(color: Colors.grey, fontSize: 17.0),
                         )),
@@ -143,7 +116,7 @@ class _AllProductsState extends State<AllProducts> {
                                     child: Container(
                                       width: double.infinity,
                                       height: 90.0,
-                                      child: Image.network(pr['images'][1],
+                                      child: Image.network(pr[2],
                                           fit: BoxFit.cover),
                                       decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(4),
@@ -153,7 +126,7 @@ class _AllProductsState extends State<AllProducts> {
                                   Container(
                                     padding: const EdgeInsets.only(top: 6.0),
                                     child: Text(
-                                      Constants.formatTitle(pr['title']),
+                                      Constants.formatTitle(pr[1]),
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
                                           fontSize: 15.0,
@@ -168,7 +141,7 @@ class _AllProductsState extends State<AllProducts> {
                                         Container(
                                           width: double.infinity,
                                           child: Text(
-                                            pr['price'].toString() + "HTG",
+                                            pr[3].toString() + "HTG",
                                             textAlign: TextAlign.center,
                                             style: TextStyle(
                                                 fontSize: 15.0,
@@ -182,24 +155,17 @@ class _AllProductsState extends State<AllProducts> {
                                           top: 4.0,
                                           child: GestureDetector(
                                             onTap: () {
-                                              Storage.addtoFavorites(pr);
+                                              print("Sote msyeu");
                                               setState(() {
-                                                favoritesTab.contains(pr['id'])
-                                                    ? favoritesTab.removeWhere(
-                                                        (el) => el == pr['id'])
-                                                    : favoritesTab
-                                                        .add(pr['id']);
+                                                getFavorites();
+                                                favoritesTab.removeWhere(
+                                                    (el) => el == pr[0]);
+                                                Storage.removeFromFavs(pr);
                                               });
                                             },
-                                            child: Icon(
-                                                favoritesTab.contains(pr['id'])
-                                                    ? Icons.favorite
-                                                    : Icons.favorite_border,
+                                            child: const Icon(Icons.favorite,
                                                 size: 22.0,
-                                                color: favoritesTab
-                                                        .contains(pr['id'])
-                                                    ? Colors.pinkAccent
-                                                    : Colors.grey),
+                                                color: Colors.pinkAccent),
                                           ), //Icon
                                         ),
                                         Positioned(
@@ -209,25 +175,23 @@ class _AllProductsState extends State<AllProducts> {
                                             onTap: () {
                                               Storage.addtoCart(pr);
                                               setState(() {
-                                                shoppingCartTab
-                                                        .contains(pr['id'])
+                                                shoppingCartTab.contains(pr[0])
                                                     ? shoppingCartTab
-                                                        .removeWhere((el) =>
-                                                            el == pr['id'])
+                                                        .removeWhere(
+                                                            (el) => el == pr[0])
                                                     : shoppingCartTab
-                                                        .add(pr['id']);
+                                                        .add(pr[0]);
                                               });
                                             },
                                             child: Icon(
-                                                shoppingCartTab
-                                                        .contains(pr['id'])
+                                                shoppingCartTab.contains(pr[0])
                                                     ? Icons
                                                         .shopping_cart_rounded
                                                     : Icons
                                                         .shopping_cart_outlined,
                                                 size: 25.0,
                                                 color: shoppingCartTab
-                                                        .contains(pr['id'])
+                                                        .contains(pr[0])
                                                     ? Constants
                                                         .secondaryAppColor
                                                     : Colors.grey),
