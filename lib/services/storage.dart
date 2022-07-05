@@ -172,4 +172,18 @@ class Storage {
       await storage.write(key: "favs", value: jsonEncode(ltTab));
     }
   }
+
+  static void removeFromCart(List prod) async {
+    String? value = await storage.read(key: "cart");
+    var ltTab = [];
+    if (value != null) {
+      List tabCarts = jsonDecode(value);
+      for (var i = 0; i < tabCarts.length; i++) {
+        if (!(tabCarts[i][0] == prod[0])) {
+          ltTab.add(tabCarts[i]);
+        }
+      }
+      await storage.write(key: "cart", value: jsonEncode(ltTab));
+    }
+  }
 }

@@ -1,21 +1,23 @@
 import "package:flutter/material.dart";
 import 'package:boutikanliy/services/constants.dart';
+import 'package:boutikanliy/services/server_config.dart';
+import "package:boutikanliy/services/api.dart";
 import "package:boutikanliy/services/storage.dart";
 import "home.dart";
 
-class Favorites extends StatefulWidget {
-  const Favorites({Key? key}) : super(key: key);
+class Cart extends StatefulWidget {
+  const Cart({Key? key}) : super(key: key);
 
   @override
-  State<Favorites> createState() => _FavoritesState();
+  State<Cart> createState() => _CartState();
 }
 
-class _FavoritesState extends State<Favorites> {
+class _CartState extends State<Cart> {
   late List<Widget> tabCategory = [];
   late List tabProducts = [];
   late List<int> shoppingCartTab = [];
-  late List<int> favoritesTab = [];
-  List<int> removedFavTab = [];
+  // late List<int> favoritesTab = [];
+  List<int> removedCartTab = [];
 
   bool loaded = false;
 
@@ -23,7 +25,7 @@ class _FavoritesState extends State<Favorites> {
     // var result = await APIService.get(
     //     ServerConfig.apiUrl + "products?offset=0&limit=6", null);
 
-    var result = await Storage.showFavs();
+    var result = await Storage.showCart();
     print("============show favs====================");
     //       prod['id'],
     //       prod['title'],
@@ -47,18 +49,18 @@ class _FavoritesState extends State<Favorites> {
     setState(() => {shoppingCartTab = idLists});
   }
 
-  void getFavorites() async {
-    var shop = await Storage.showFavs();
-    List<int> idLists = [];
-    for (var k = 0; k < shop.length; k++) {
-      idLists.add(shop[k][0] as int);
-    }
-    setState(() => {favoritesTab = idLists});
-  }
+  // void getFavorites() async {
+  //   var shop = await Storage.showFavs();
+  //   List<int> idLists = [];
+  //   for (var k = 0; k < shop.length; k++) {
+  //     idLists.add(shop[k][0] as int);
+  //   }
+  //   setState(() => {favoritesTab = idLists});
+  // }
 
   @override
   void initState() {
-    getFavorites();
+    // getFavorites();
     getProducts();
     getShoppingCart();
     super.initState();
@@ -85,8 +87,8 @@ class _FavoritesState extends State<Favorites> {
                         padding: const EdgeInsets.only(top: 40.0),
                         width: double.infinity,
                         child: Text(
-                          "Pwodui'w pi remen yo (" +
-                              (tabProducts.length - removedFavTab.length)
+                          "Pwodui nan panye'w yo (" +
+                              (tabProducts.length - removedCartTab.length)
                                   .toString() +
                               ") ",
                           textAlign: TextAlign.left,
@@ -106,7 +108,7 @@ class _FavoritesState extends State<Favorites> {
                           mainAxisSpacing: 6,
                           crossAxisCount: 2,
                           children: tabProducts.map((pr) {
-                            return !(removedFavTab.contains(pr[0]))
+                            return !(removedCartTab.contains(pr[0]))
                                 ? Container(
                                     margin: const EdgeInsets.only(bottom: 9.0),
                                     width: double.infinity,
@@ -167,19 +169,18 @@ class _FavoritesState extends State<Favorites> {
                                                   onTap: () {
                                                     print("Sote msyeu");
                                                     setState(() {
-                                                      // getFavorites();
-                                                      // favoritesTab.removeWhere(
-                                                      //     (el) => el == pr[0]);
-                                                      Storage.removeFromFavs(
+                                                      Storage.removeFromCart(
                                                           pr);
-                                                      removedFavTab
+                                                      removedCartTab
                                                           .add(pr[0] as int);
                                                     });
                                                   },
-                                                  child: const Icon(
-                                                      Icons.favorite,
+                                                  child: Icon(
+                                                      Icons
+                                                          .shopping_cart_rounded,
                                                       size: 22.0,
-                                                      color: Colors.pinkAccent),
+                                                      color: Constants
+                                                          .secondaryAppColor),
                                                 ), //Icon
                                               ),
                                             ],

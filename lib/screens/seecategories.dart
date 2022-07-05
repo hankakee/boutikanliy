@@ -5,14 +5,15 @@ import "package:boutikanliy/services/api.dart";
 import "package:boutikanliy/services/storage.dart";
 import "home.dart";
 
-class AllProducts extends StatefulWidget {
-  const AllProducts({Key? key}) : super(key: key);
+class Categories extends StatefulWidget {
+  final String category;
+  const Categories({Key? key, required this.category}) : super(key: key);
 
   @override
-  State<AllProducts> createState() => _AllProductsState();
+  State<Categories> createState() => _CategoriesState();
 }
 
-class _AllProductsState extends State<AllProducts> {
+class _CategoriesState extends State<Categories> {
   late List tabProducts = [];
   late List<int> shoppingCartTab = [];
   late List<int> favoritesTab = [];
@@ -65,21 +66,30 @@ class _AllProductsState extends State<AllProducts> {
     return Scaffold(
       appBar: AppBar(
         actions: [
-          Container(
-            alignment: Alignment.center,
-            padding: const EdgeInsets.only(right: 10),
-            child: GestureDetector(
-              onTap: () {
-                // Storage.removeKey("cart");
-              },
-              child: const Text(
-                "PEYE",
-                style: TextStyle(
-                    fontSize: 16.0,
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold),
+          Row(
+            children: [
+              Container(
+                  child: Text(
+                widget.category,
+                style: const TextStyle(color: Colors.white),
+              )),
+              Container(
+                alignment: Alignment.center,
+                padding: const EdgeInsets.only(right: 10),
+                child: GestureDetector(
+                  onTap: () {
+                    // Storage.removeKey("cart");
+                  },
+                  child: const Text(
+                    "PEYE",
+                    style: TextStyle(
+                        fontSize: 16.0,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold),
+                  ),
+                ),
               ),
-            ),
+            ],
           )
         ],
         leading: GestureDetector(
