@@ -4,10 +4,13 @@ import 'package:boutikanliy/services/server_config.dart';
 import "package:boutikanliy/services/api.dart";
 import "package:boutikanliy/services/storage.dart";
 import "home.dart";
+import 'peye.dart';
 
 class Categories extends StatefulWidget {
   final String category;
-  const Categories({Key? key, required this.category}) : super(key: key);
+  final int id;
+  const Categories({Key? key, required this.category, required this.id})
+      : super(key: key);
 
   @override
   State<Categories> createState() => _CategoriesState();
@@ -17,6 +20,8 @@ class _CategoriesState extends State<Categories> {
   late List tabProducts = [];
   late List<int> shoppingCartTab = [];
   late List<int> favoritesTab = [];
+  late List tabProductsbycategory = [];
+
   bool loaded = false;
   @override
   void initState() {
@@ -45,17 +50,16 @@ class _CategoriesState extends State<Categories> {
   }
 
   void getProducts() async {
+    int category = widget.id;
     try {
       var result = await APIService.get(
-          ServerConfig.apiUrl + "products?offset=0&limit=100", null);
-      setState(() => {
-            loaded = true,
-            if (result.isNotEmpty)
-              {
-                tabProducts = result,
-              }
-          });
-      print("Done with products");
+          ServerConfig.apiUrl +
+              "categories/" +
+              category.toString() +
+              "/products?offset=0&limit=20",
+          null);
+      setState(() => {tabProductsbycategory = result, loaded = true});
+      print("Done with products category");
     } catch (e) {
       print(e);
     }
@@ -65,20 +69,22 @@ class _CategoriesState extends State<Categories> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        title: Container(
+            // width: 120,
+            child: Text(
+          "Kategori: " + widget.category,
+          style: const TextStyle(color: Colors.white, fontSize: 17),
+        )),
         actions: [
           Row(
             children: [
-              Container(
-                  child: Text(
-                widget.category,
-                style: const TextStyle(color: Colors.white),
-              )),
               Container(
                 alignment: Alignment.center,
                 padding: const EdgeInsets.only(right: 10),
                 child: GestureDetector(
                   onTap: () {
-                    // Storage.removeKey("cart");
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => const Peye()));
                   },
                   child: const Text(
                     "PEYE",
@@ -108,23 +114,24 @@ class _CategoriesState extends State<Categories> {
         child: loaded == false
             ? Center(
                 child: Container(
-                padding: EdgeInsets.only(top: 300),
+                padding: const EdgeInsets.only(top: 300),
                 child: CircularProgressIndicator(
                   color: Constants.primaryAppColor,
                 ),
               ))
             : Container(
-                height: 18000,
+                height: 5000,
                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
                 child: Column(
                   children: [
                     Container(
                         padding: const EdgeInsets.only(top: 40.0),
                         width: double.infinity,
-                        child: const Text(
-                          "Pwodui vedèt",
+                        child: Text(
+                          "Pwodui nan kategori: " + widget.category,
                           textAlign: TextAlign.left,
-                          style: TextStyle(color: Colors.grey, fontSize: 17.0),
+                          style: const TextStyle(
+                              color: Colors.grey, fontSize: 17.0),
                         )),
                     const SizedBox(
                         child: Padding(
@@ -138,7 +145,7 @@ class _CategoriesState extends State<Categories> {
                           crossAxisSpacing: 6,
                           mainAxisSpacing: 6,
                           crossAxisCount: 2,
-                          children: tabProducts.map((pr) {
+                          children: tabProductsbycategory.map((pr) {
                             return Container(
                               margin: const EdgeInsets.only(bottom: 9.0),
                               width: double.infinity,

@@ -4,6 +4,8 @@ import 'package:boutikanliy/services/server_config.dart';
 import "package:boutikanliy/services/api.dart";
 import "package:boutikanliy/services/storage.dart";
 import "home.dart";
+import 'detailsproducts.dart';
+import 'peye.dart';
 
 class AllProducts extends StatefulWidget {
   const AllProducts({Key? key}) : super(key: key);
@@ -64,13 +66,15 @@ class _AllProductsState extends State<AllProducts> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        title: const Text("Lis pwodui'w"),
         actions: [
           Container(
             alignment: Alignment.center,
             padding: const EdgeInsets.only(right: 10),
             child: GestureDetector(
               onTap: () {
-                // Storage.removeKey("cart");
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => const Peye()));
               },
               child: const Text(
                 "PEYE",
@@ -138,7 +142,11 @@ class _AllProductsState extends State<AllProducts> {
                                 child: Column(children: [
                                   GestureDetector(
                                     onTap: () {
-                                      // actionsprods("view", id);
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  Details(idprod: pr['id'])));
                                     },
                                     child: Container(
                                       width: double.infinity,
@@ -248,6 +256,18 @@ class _AllProductsState extends State<AllProducts> {
                   ],
                 ),
               ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Constants.secondaryAppColor,
+        child: const Icon(
+          Icons.monetization_on,
+          size: 28,
+        ),
+        onPressed: () {
+          // Storage.removeKey("cart");
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => const Peye()));
+        },
       ),
     );
   }

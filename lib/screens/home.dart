@@ -9,6 +9,9 @@ import "package:boutikanliy/services/storage.dart";
 import 'custom_drawer.dart';
 import 'favorites.dart';
 import 'shoppingcart.dart';
+import 'seeCategories.dart';
+import 'detailsproducts.dart';
+import 'peye.dart';
 import 'package:boutikanliy/services/constants.dart';
 
 class Home extends StatefulWidget {
@@ -100,111 +103,6 @@ class _HomeState extends State<Home> {
       }
     }
     setState(() => {tabCategory = tmptabwidget, tabCategory2 = tmptabwidget2});
-    // for (int i = 0; i < 2; i++) {
-    //   tmptabwidget.add(
-    //     Container(
-    //       margin: const EdgeInsets.only(bottom: 9.0),
-    //       width: double.infinity,
-    //       height: 200.0,
-    //       child: Padding(
-    //         padding: const EdgeInsets.all(8.0),
-    //         child: Stack(children: [
-    //           Container(
-    //             width: double.infinity,
-    //             height: 190.0,
-    //             child: Image.network(result[i]["image"], fit: BoxFit.cover),
-    //             decoration: BoxDecoration(
-    //               borderRadius: BorderRadius.circular(4),
-    //             ),
-    //           ),
-    //           Positioned(
-    //             right: 0,
-    //             bottom: 0,
-    //             child: Container(
-    //               padding: const EdgeInsets.only(left: 6.0),
-    //               color: Constants.cardsColor,
-    //               child: Text(
-    //                 result[i]["name"],
-    //                 style: TextStyle(
-    //                     fontSize: 15.0,
-    //                     color: Constants.primaryAppColor,
-    //                     fontWeight: FontWeight.bold),
-    //               ),
-    //             ),
-    //           ),
-    //         ]),
-    //       ),
-    //       decoration: BoxDecoration(
-    //         color: Constants.cardsColor,
-    //         borderRadius: BorderRadius.circular(4),
-    //       ),
-    //     ),
-    //   );
-    // }
-
-    // tmptabwidget.add(Container(
-    //   child: GridView.count(
-    //     primary: false,
-    //     crossAxisSpacing: 6,
-    //     mainAxisSpacing: 6,
-    //     crossAxisCount: 2,
-    //     shrinkWrap: true,
-    //     children: [
-    //       // const SizedBox(
-    //       //   child: Padding(padding: EdgeInsets.only(top: 5.0)),
-    //       // ),
-    //       Container(
-    //         child: Column(children: [
-    //           Container(
-    //             width: double.infinity,
-    //             height: 130.0,
-    //             child: Image.network(result[3]["image"], fit: BoxFit.cover),
-    //           ),
-    //           Container(
-    //               padding: const EdgeInsets.only(top: 6.0),
-    //               child: Text(
-    //                 result[3]["name"],
-    //                 style: TextStyle(
-    //                     fontSize: 15.0,
-    //                     color: Constants.primaryAppColor,
-    //                     fontWeight: FontWeight.bold),
-    //               )),
-    //         ]),
-    //         padding: const EdgeInsets.all(4.0),
-    //         decoration: BoxDecoration(
-    //           color: Constants.cardsColor,
-    //           borderRadius: BorderRadius.circular(4),
-    //         ),
-    //       ),
-    //       Container(
-    //         child: Column(children: [
-    //           Container(
-    //             width: double.infinity,
-    //             height: 130.0,
-    //             child: Image.network(result[4]["image"], fit: BoxFit.cover),
-    //           ),
-    //           Container(
-    //             padding: const EdgeInsets.only(top: 6.0),
-    //             child: Text(
-    //               result[4]["name"],
-    //               style: TextStyle(
-    //                   fontSize: 15.0,
-    //                   color: Constants.primaryAppColor,
-    //                   fontWeight: FontWeight.bold),
-    //             ),
-    //           ),
-    //         ]),
-    //         padding: const EdgeInsets.all(4.0),
-    //         decoration: BoxDecoration(
-    //           color: Constants.cardsColor,
-    //           borderRadius: BorderRadius.circular(4),
-    //         ),
-    //       ),
-    //     ],
-    //   ),
-    // ));
-    // print(tmptabwidget);
-    // print(MediaQuery.of(context).size.height);
   }
 
   Widget akeyInnerScreen(context) {
@@ -228,41 +126,55 @@ class _HomeState extends State<Home> {
             Container(
               child: Column(
                   children: tabCategory.map((cat) {
-                return Container(
-                  margin: const EdgeInsets.only(bottom: 9.0),
-                  width: double.infinity,
-                  height: 200.0,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Stack(children: [
-                      Container(
-                        width: double.infinity,
-                        height: 190.0,
-                        child: Image.network(cat["image"], fit: BoxFit.cover),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                      ),
-                      Positioned(
-                        right: 0,
-                        bottom: 0,
-                        child: Container(
-                          padding: const EdgeInsets.only(left: 6.0),
-                          color: Constants.cardsColor,
-                          child: Text(
-                            cat["name"],
-                            style: TextStyle(
-                                fontSize: 15.0,
-                                color: Constants.primaryAppColor,
-                                fontWeight: FontWeight.bold),
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => Categories(
+                                category: cat['name'], id: cat['id'])));
+
+                    // print("cat['id']");
+                    // print(cat['id']);
+                    // Mate
+                    // printProductsByCategories(cat['id']);
+                  },
+                  child: Container(
+                    margin: const EdgeInsets.only(bottom: 9.0),
+                    width: double.infinity,
+                    height: 200.0,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Stack(children: [
+                        Container(
+                          width: double.infinity,
+                          height: 190.0,
+                          child: Image.network(cat["image"], fit: BoxFit.cover),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(4),
                           ),
                         ),
-                      ),
-                    ]),
-                  ),
-                  decoration: BoxDecoration(
-                    color: Constants.cardsColor,
-                    borderRadius: BorderRadius.circular(4),
+                        Positioned(
+                          right: 0,
+                          bottom: 0,
+                          child: Container(
+                            padding: const EdgeInsets.only(left: 6.0),
+                            color: Constants.cardsColor,
+                            child: Text(
+                              cat["name"],
+                              style: TextStyle(
+                                  fontSize: 15.0,
+                                  color: Constants.primaryAppColor,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ),
+                      ]),
+                    ),
+                    decoration: BoxDecoration(
+                      color: Constants.cardsColor,
+                      borderRadius: BorderRadius.circular(4),
+                    ),
                   ),
                 );
               }).toList()),
@@ -275,27 +187,37 @@ class _HomeState extends State<Home> {
                   crossAxisCount: 2,
                   shrinkWrap: true,
                   children: tabCategory2.map((cat) {
-                    return Container(
-                      child: Column(children: [
-                        Container(
-                          width: double.infinity,
-                          height: 130.0,
-                          child: Image.network(cat["image"], fit: BoxFit.cover),
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => Categories(
+                                    category: cat['name'], id: cat['id'])));
+                      },
+                      child: Container(
+                        child: Column(children: [
+                          Container(
+                            width: double.infinity,
+                            height: 130.0,
+                            child:
+                                Image.network(cat["image"], fit: BoxFit.cover),
+                          ),
+                          Container(
+                              padding: const EdgeInsets.only(top: 6.0),
+                              child: Text(
+                                cat["name"],
+                                style: TextStyle(
+                                    fontSize: 15.0,
+                                    color: Constants.primaryAppColor,
+                                    fontWeight: FontWeight.bold),
+                              )),
+                        ]),
+                        padding: const EdgeInsets.all(4.0),
+                        decoration: BoxDecoration(
+                          color: Constants.cardsColor,
+                          borderRadius: BorderRadius.circular(4),
                         ),
-                        Container(
-                            padding: const EdgeInsets.only(top: 6.0),
-                            child: Text(
-                              cat["name"],
-                              style: TextStyle(
-                                  fontSize: 15.0,
-                                  color: Constants.primaryAppColor,
-                                  fontWeight: FontWeight.bold),
-                            )),
-                      ]),
-                      padding: const EdgeInsets.all(4.0),
-                      decoration: BoxDecoration(
-                        color: Constants.cardsColor,
-                        borderRadius: BorderRadius.circular(4),
                       ),
                     );
                   }).toList()),
@@ -327,18 +249,22 @@ class _HomeState extends State<Home> {
                       child: Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Column(children: [
-                          GestureDetector(
-                            onTap: () {
-                              // actionsprods("view", id);
-                            },
-                            child: Container(
-                              width: double.infinity,
-                              height: 90.0,
+                          Container(
+                            width: double.infinity,
+                            height: 90.0,
+                            child: GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            Details(idprod: pr['id'])));
+                              },
                               child: Image.network(pr['images'][1],
                                   fit: BoxFit.cover),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(4),
-                              ),
+                            ),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(4),
                             ),
                           ),
                           Container(
@@ -504,7 +430,9 @@ class _HomeState extends State<Home> {
             padding: const EdgeInsets.only(right: 10),
             child: GestureDetector(
               onTap: () {
-                Storage.removeKey("cart");
+                // Storage.removeKey("cart");
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => const Peye()));
               },
               child: Text(
                 "PEYE",
@@ -535,6 +463,18 @@ class _HomeState extends State<Home> {
               : (selectedIndex == 0
                   ? const Center(child: Favorites())
                   : const Center(child: Cart()))),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Constants.secondaryAppColor,
+        child: const Icon(
+          Icons.monetization_on,
+          size: 28,
+        ),
+        onPressed: () {
+          // Storage.removeKey("cart");
+          Navigator.push(
+              context, MaterialPageRoute(builder: (context) => const Peye()));
+        },
+      ),
     );
   }
 }

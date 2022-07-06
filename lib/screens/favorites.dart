@@ -2,6 +2,7 @@ import "package:flutter/material.dart";
 import 'package:boutikanliy/services/constants.dart';
 import "package:boutikanliy/services/storage.dart";
 import "home.dart";
+import 'detailsproducts.dart';
 
 class Favorites extends StatefulWidget {
   const Favorites({Key? key}) : super(key: key);
@@ -116,7 +117,12 @@ class _FavoritesState extends State<Favorites> {
                                       child: Column(children: [
                                         GestureDetector(
                                           onTap: () {
-                                            // actionsprods("view", id);
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        Details(
+                                                            idprod: pr[0])));
                                           },
                                           child: Container(
                                             width: double.infinity,

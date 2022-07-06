@@ -10,4 +10,11 @@ class Constants {
     }
     return textDesc;
   }
+
+  static String formatDescription(String textDesc) {
+    if (textDesc.length > 60) {
+      return textDesc.substring(0, 60) + "...";
+    }
+    return textDesc;
+  }
 }

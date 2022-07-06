@@ -1,9 +1,25 @@
 import "package:flutter/material.dart";
 import '../screens/allproducts.dart';
+import '../screens/login.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class CustomizedDrawer {
   final cardsColor = Colors.grey[300];
   Color primaryAppColor = const Color(0XFF994CFC);
+  @override
+  // void initState() {
+  //   readToken();
+  //   super.initState();
+  // }
+
+  // final storage = const FlutterSecureStorage();
+  // String tokenuser = "notoken";
+  // void readToken() async {
+  //   dynamic tu = await storage.read(key: "access_token");
+  //   setState(() => {tokenuser = tu});
+  //   // print(tokenuser);
+  // }
+
   // final String picture;
   // const CustomizedDrawer({Key? key, required this.picture});
   CustomizedDrawer();
@@ -76,7 +92,8 @@ class CustomizedDrawer {
             ),
             ListTile(
                 onTap: () {
-                  Navigator.pop(context);
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => const Login()));
                 },
                 title: Row(
                   children: [

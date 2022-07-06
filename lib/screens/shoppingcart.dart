@@ -4,6 +4,7 @@ import 'package:boutikanliy/services/server_config.dart';
 import "package:boutikanliy/services/api.dart";
 import "package:boutikanliy/services/storage.dart";
 import "home.dart";
+import 'detailsproducts.dart';
 
 class Cart extends StatefulWidget {
   const Cart({Key? key}) : super(key: key);
@@ -87,10 +88,10 @@ class _CartState extends State<Cart> {
                         padding: const EdgeInsets.only(top: 40.0),
                         width: double.infinity,
                         child: Text(
-                          "Pwodui nan panye'w yo (" +
+                          "Panye'w la gen(" +
                               (tabProducts.length - removedCartTab.length)
                                   .toString() +
-                              ") ",
+                              ") pwodui",
                           textAlign: TextAlign.left,
                           style: const TextStyle(
                               color: Colors.grey, fontSize: 17.0),
@@ -118,7 +119,12 @@ class _CartState extends State<Cart> {
                                       child: Column(children: [
                                         GestureDetector(
                                           onTap: () {
-                                            // actionsprods("view", id);
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        Details(
+                                                            idprod: pr[0])));
                                           },
                                           child: Container(
                                             width: double.infinity,
