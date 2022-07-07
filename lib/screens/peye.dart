@@ -224,11 +224,11 @@ class _PeyeState extends State<Peye> {
                       padding: const EdgeInsets.only(bottom: 7.0),
                       child: Column(children: [
                         SizedBox(
-                          child: Image.asset("paypall.png"),
+                          child: Image.asset("assets/paypall.png"),
                           // width: 120,
                         ),
                         SizedBox(
-                          child: Image.asset("moncash.png"),
+                          child: Image.asset("assets/moncash.png"),
                           // width: 120,
                         ),
                       ]),

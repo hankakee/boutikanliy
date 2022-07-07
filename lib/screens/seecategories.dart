@@ -4,6 +4,9 @@ import 'package:boutikanliy/services/server_config.dart';
 import "package:boutikanliy/services/api.dart";
 import "package:boutikanliy/services/storage.dart";
 import "home.dart";
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import "package:boutikanliy/services/mesaj.dart";
+
 import 'peye.dart';
 
 class Categories extends StatefulWidget {
@@ -21,7 +24,7 @@ class _CategoriesState extends State<Categories> {
   late List<int> shoppingCartTab = [];
   late List<int> favoritesTab = [];
   late List tabProductsbycategory = [];
-
+  final storage = const FlutterSecureStorage();
   bool loaded = false;
   @override
   void initState() {
@@ -198,15 +201,28 @@ class _CategoriesState extends State<Categories> {
                                           right: 4.0,
                                           top: 4.0,
                                           child: GestureDetector(
-                                            onTap: () {
-                                              Storage.addtoFavorites(pr);
-                                              setState(() {
-                                                favoritesTab.contains(pr['id'])
-                                                    ? favoritesTab.removeWhere(
-                                                        (el) => el == pr['id'])
-                                                    : favoritesTab
-                                                        .add(pr['id']);
-                                              });
+                                            onTap: () async {
+                                              dynamic tu = await storage.read(
+                                                  key: "access_token");
+                                              // print(tu);
+                                              if (tu == null) {
+                                                ManagerMesaj().showMesaj2(
+                                                    context,
+                                                    "Domaj fok ou konekte avan'w mete pwodui sa nan favori",
+                                                    true,
+                                                    2);
+                                              } else if (tu != null) {
+                                                Storage.addtoFavorites(pr);
+                                                setState(() {
+                                                  favoritesTab
+                                                          .contains(pr['id'])
+                                                      ? favoritesTab
+                                                          .removeWhere((el) =>
+                                                              el == pr['id'])
+                                                      : favoritesTab
+                                                          .add(pr['id']);
+                                                });
+                                              }
                                             },
                                             child: Icon(
                                                 favoritesTab.contains(pr['id'])
@@ -223,17 +239,28 @@ class _CategoriesState extends State<Categories> {
                                           left: 4.0,
                                           top: 4.0,
                                           child: GestureDetector(
-                                            onTap: () {
-                                              Storage.addtoCart(pr);
-                                              setState(() {
-                                                shoppingCartTab
-                                                        .contains(pr['id'])
-                                                    ? shoppingCartTab
-                                                        .removeWhere((el) =>
-                                                            el == pr['id'])
-                                                    : shoppingCartTab
-                                                        .add(pr['id']);
-                                              });
+                                            onTap: () async {
+                                              dynamic tu = await storage.read(
+                                                  key: "access_token");
+                                              // print(tu);
+                                              if (tu == null) {
+                                                ManagerMesaj().showMesaj2(
+                                                    context,
+                                                    "Domaj fok ou konekte avan'w mete pwodui sa nan panye'w",
+                                                    true,
+                                                    2);
+                                              } else if (tu != null) {
+                                                Storage.addtoCart(pr);
+                                                setState(() {
+                                                  shoppingCartTab
+                                                          .contains(pr['id'])
+                                                      ? shoppingCartTab
+                                                          .removeWhere((el) =>
+                                                              el == pr['id'])
+                                                      : shoppingCartTab
+                                                          .add(pr['id']);
+                                                });
+                                              }
                                             },
                                             child: Icon(
                                                 shoppingCartTab

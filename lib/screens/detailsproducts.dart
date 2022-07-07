@@ -185,6 +185,7 @@ class _DetailsState extends State<Details> {
                                   ),
                                 ),
                                 Positioned(
+                                  height: 30.0,
                                   right: 4.0,
                                   top: 4.0,
                                   child: GestureDetector(
@@ -209,33 +210,6 @@ class _DetailsState extends State<Details> {
                                             : Colors.grey),
                                   ), //Icon
                                 ),
-                                // Positioned(
-                                //   left: 4.0,
-                                //   top: 4.0,
-                                //   child: GestureDetector(
-                                //     onTap: () {
-                                //       Storage.addtoCart(tabProducts);
-                                //       setState(() {
-                                //         shoppingCartTab
-                                //                 .contains(tabProducts['id'])
-                                //             ? shoppingCartTab.removeWhere(
-                                //                 (el) => el == tabProducts['id'])
-                                //             : shoppingCartTab
-                                //                 .add(tabProducts['id']);
-                                //       });
-                                //     },
-                                //     child: Icon(
-                                //         shoppingCartTab
-                                //                 .contains(tabProducts['id'])
-                                //             ? Icons.shopping_cart_rounded
-                                //             : Icons.shopping_cart_outlined,
-                                //         size: 22.0,
-                                //         color: shoppingCartTab
-                                //                 .contains(tabProducts['id'])
-                                //             ? Constants.secondaryAppColor
-                                //             : Colors.grey),
-                                //   ), //Icon
-                                // ),
                               ],
                             ),
                           ),

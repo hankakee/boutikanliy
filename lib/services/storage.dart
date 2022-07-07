@@ -94,7 +94,7 @@ class Storage {
 
   static void removeKey(cle) async {
     await storage.delete(key: cle);
-    await storage.delete(key: "favs");
+    // await storage.delete(key: "favs");
     print('removed: ' + cle);
   }
 

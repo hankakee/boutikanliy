@@ -1,21 +1,24 @@
+import 'package:boutikanliy/services/storage.dart';
 import "package:flutter/material.dart";
 import '../screens/allproducts.dart';
-import '../screens/login.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import '../screens/login.dart';
+import "package:boutikanliy/services/mesaj.dart";
 
 class CustomizedDrawer {
   final cardsColor = Colors.grey[300];
+  final storage = const FlutterSecureStorage();
   Color primaryAppColor = const Color(0XFF994CFC);
   @override
   // void initState() {
   //   readToken();
   //   super.initState();
   // }
-
   // final storage = const FlutterSecureStorage();
+
   // String tokenuser = "notoken";
-  // void readToken() async {
   //   dynamic tu = await storage.read(key: "access_token");
+  // void readToken() async {
   //   setState(() => {tokenuser = tu});
   //   // print(tokenuser);
   // }
@@ -52,7 +55,9 @@ class CustomizedDrawer {
                     height: 200.0,
                     child: Column(
                       children: [
-                        SizedBox(height: 40, child: Image.asset("eboutik.png")),
+                        SizedBox(
+                            height: 40,
+                            child: Image.asset("assets/eboutik.png")),
                         pic == 'profile'
                             ? Icon(Icons.supervised_user_circle_sharp,
                                 size: 90.0, color: primaryAppColor)
@@ -85,15 +90,24 @@ class CustomizedDrawer {
               ),
               decoration: const BoxDecoration(
                 image: DecorationImage(
-                    image: AssetImage("bannerlog.png"), fit: BoxFit.cover),
+                    image: AssetImage("assets/bannerlog.png"),
+                    fit: BoxFit.cover),
               ),
               height: 250.0,
               width: double.infinity,
             ),
             ListTile(
-                onTap: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => const Login()));
+                //check if token exist
+                onTap: () async {
+                  dynamic tu = await storage.read(key: "access_token");
+                  Navigator.pop(context);
+                  if (tu == null) {
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => const Login()));
+                  } else {
+                    ManagerMesaj().showMesaj2(context,
+                        "Ou konekte deja ,eseye dekonekte pito!", true, 3);
+                  }
                 },
                 title: Row(
                   children: [
@@ -132,15 +146,34 @@ class CustomizedDrawer {
                   ],
                 )),
             ListTile(
-                onTap: () {
-                  // SystemChannels.platform.invokeMethod('SystemNavigator.pop');
-                  // callbackReplay("loose");
+                onTap: () async {
+                  dynamic tu = await storage.read(key: "access_token");
+                  // print(tu);
+                  if (tu == null) {
+                    Navigator.pop(context);
+                    ManagerMesaj().showMesaj2(
+                        context,
+                        "Ou pat janm konekte non,klike sou konekte...",
+                        true,
+                        3);
+                  } else {
+                    Storage.removeKey("access_token");
+                    Storage.removeKey("avatar");
+                    Storage.removeKey("email");
+                    Storage.removeKey("name");
+                    Storage.removeKey("cart");
+                    Storage.removeKey("favs");
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => const Login()));
+                    ManagerMesaj().showMesaj2(context,
+                        "Ou fek dekonekte la,na rewè anko...", true, 3);
+                  }
                 },
                 title: Row(
                   children: [
                     Container(
                         padding: const EdgeInsets.only(right: 10),
-                        child: Icon(
+                        child: const Icon(
                           Icons.door_back_door,
                           size: 17,
                         )),

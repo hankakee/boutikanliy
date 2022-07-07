@@ -2,7 +2,7 @@ import "package:flutter/material.dart";
 import "package:boutikanliy/services/mesaj.dart";
 import "package:boutikanliy/services/api.dart";
 import 'dart:async';
-import 'Home.dart';
+import 'home.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:boutikanliy/services/server_config.dart';
 
@@ -77,7 +77,7 @@ class _LoginState extends State<Login> {
     return Scaffold(
       body: SingleChildScrollView(
         child: Container(
-          height: 700.0,
+          height: 800.0,
           color: Colors.white,
           child: Column(
             children: [
@@ -92,7 +92,7 @@ class _LoginState extends State<Login> {
                     Padding(
                       padding: const EdgeInsets.only(bottom: 10.0),
                       child: Image.asset(
-                        "eboutik.png",
+                        "assets/eboutik.png",
                         width: 250.0,
                       ),
                     )
@@ -104,7 +104,8 @@ class _LoginState extends State<Login> {
                     bottomLeft: Radius.circular(50),
                   ),
                   image: DecorationImage(
-                      image: AssetImage("bannerlog.png"), fit: BoxFit.cover),
+                      image: AssetImage("assets/bannerlog.png"),
+                      fit: BoxFit.cover),
                 ),
               ),
               Container(
@@ -266,6 +267,28 @@ class _LoginState extends State<Login> {
                                   borderRadius: BorderRadius.circular(10),
                                 )),
                           ),
+                          Container(
+                              width: double.infinity,
+                              padding: const EdgeInsets.only(top: 10.0),
+                              child: GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => const Home(
+                                                title: "Eboutikoo",
+                                              )));
+                                  ManagerMesaj().showMesaj2(
+                                      context,
+                                      "Atansyon,ou pap ka ni mete nan panye,ni favori san konekte...!",
+                                      true,
+                                      6);
+                                },
+                                child: const Text(
+                                  "M'anvi vizite...",
+                                  textAlign: TextAlign.right,
+                                ),
+                              )),
                         ],
                       ),
                     ],

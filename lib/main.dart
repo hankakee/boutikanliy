@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'screens/Home.dart';
+import 'screens/home.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 void main() async {
@@ -25,7 +25,9 @@ class _BoutikAnliyState extends State<BoutikAnliy> {
   String tokenuser = "notoken";
   void readToken() async {
     dynamic tu = await storage.read(key: "access_token");
-    setState(() => {tokenuser = tu});
+    if (tu != null) {
+      setState(() => {tokenuser = tu});
+    }
     // print(tokenuser);
   }
 
@@ -35,10 +37,7 @@ class _BoutikAnliyState extends State<BoutikAnliy> {
       title: 'EBoutikoo',
       debugShowCheckedModeBanner: false,
       home: Container(
-        child:
-            // tokenuser == "notoken"
-            //     ? const Login()
-            const Home(title: 'EBoutikoo'),
+        child: const Home(title: 'EBoutikoo'),
       ),
       theme: ThemeData(
         fontFamily: 'Poppins',
